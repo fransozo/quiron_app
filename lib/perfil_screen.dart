@@ -48,7 +48,15 @@ class PerfilScreen extends StatelessWidget {
           ),
           margin: EdgeInsets.all(50.0),
           decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(5.0),
+              borderRadius: BorderRadius.circular(10.0),
+              boxShadow: [
+                BoxShadow(
+                  color: Colors.grey[300],
+                  spreadRadius: 4,
+                  blurRadius: 10,
+                  offset: Offset(0, 3),
+                )
+              ],
               color: Color(0xFF15EBC4)),
           width: 100.0,
           height: 100.0,

@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'login_screen.dart';
-import 'background_signup.dart';
+import 'background_ficha_perfil.dart';
 import 'or_divider.dart';
 import 'social_icon.dart';
 import 'already_have_an_account_acheck.dart';
@@ -13,40 +13,20 @@ class BodyFicha extends StatelessWidget {
   Widget build(BuildContext context) {
     Size size = MediaQuery.of(context).size;
     return Background(
-      child: SingleChildScrollView(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: <Widget>[
-            Expanded(
-              child: Image.asset(
-                "images/quiron_logo.png",
-                width: 250,
-                height: 200,
-              ),
+      child: Column(
+        children: <Widget>[
+          Expanded(
+            child: ListView(
+              padding: const EdgeInsets.all(8),
+              children: <Widget>[
+                RoundedInputField(
+                  hintText: "Your Email",
+                  onChanged: (value) {},
+                ),
+              ],
             ),
-            SizedBox(height: size.height * 0.03),
-            Expanded(
-              child: RoundedInputField(
-                hintText: "Nome",
-                onChanged: (value) {},
-              ),
-            ),
-            SizedBox(height: size.height * 0.03),
-            AlreadyHaveAnAccountCheck(
-              login: false,
-              press: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) {
-                      return LoginScreen();
-                    },
-                  ),
-                );
-              },
-            ),
-          ],
-        ),
+          ),
+        ],
       ),
     );
   }
