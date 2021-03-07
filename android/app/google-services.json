@@ -1,0 +1,40 @@
+{
+  "project_info": {
+    "project_number": "939022349783",
+    "firebase_url": "https://quiron-eb41f-default-rtdb.firebaseio.com",
+    "project_id": "quiron-eb41f",
+    "storage_bucket": "quiron-eb41f.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:939022349783:android:f29882e07bd778aecd8792",
+        "android_client_info": {
+          "package_name": "com.example.quiron_app"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "939022349783-v1v1efndcqfk6elcnqelq1ikgj30gs21.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCBeIk8vcGILN2Df0KdiwfKDS8JnTAwDbg"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "939022349783-v1v1efndcqfk6elcnqelq1ikgj30gs21.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

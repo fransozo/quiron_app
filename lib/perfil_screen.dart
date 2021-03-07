@@ -1,8 +1,52 @@
 import 'package:flutter/material.dart';
-import 'body_ficha_perfil.dart';
+import 'tela_add_perfil.dart';
+import 'tela_login.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 
-class PerfilScreen extends StatelessWidget {
+class PerfilScreen extends StatefulWidget {
   @override
+  _PerfilScreen createState() => _PerfilScreen();
+}
+
+class _PerfilScreen extends State<PerfilScreen> {
+  final FirebaseAuth _auth = FirebaseAuth.instance;
+
+  User user;
+  bool isloggedin = false;
+
+  checkAuthentification() async {
+    FirebaseAuth.instance.authStateChanges().listen((User user) {
+      if (user == null) {
+        Navigator.push(
+            context, MaterialPageRoute(builder: (context) => TelaLogin()));
+      }
+    });
+  }
+
+  getUser() {
+    User firebaseUser = _auth.currentUser;
+    firebaseUser?.reload();
+    firebaseUser = _auth.currentUser;
+
+    if (firebaseUser != null) {
+      setState(() {
+        this.user = firebaseUser;
+        this.isloggedin = true;
+      });
+    }
+  }
+
+  signOut() async {
+    _auth.signOut();
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    this.checkAuthentification();
+    this.getUser();
+  }
+
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: PreferredSize(
@@ -32,35 +76,37 @@ class PerfilScreen extends StatelessWidget {
         ),
       ),
       body: Center(
-        child: Container(
-          child: GestureDetector(
-            onTap: () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(builder: (context) {
-                  return BodyFicha();
-                }),
-              );
-            },
-            child: ReusableCard(
-              cor: Color(0xff15EBC4),
-            ),
-          ),
-          margin: EdgeInsets.all(50.0),
-          decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(10.0),
-              boxShadow: [
-                BoxShadow(
-                  color: Colors.grey[300],
-                  spreadRadius: 4,
-                  blurRadius: 10,
-                  offset: Offset(0, 3),
-                )
-              ],
-              color: Color(0xFF15EBC4)),
-          width: 100.0,
-          height: 100.0,
-        ),
+        child: !isloggedin
+            ? CircularProgressIndicator()
+            : Container(
+                child: GestureDetector(
+                  onTap: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(builder: (context) {
+                        return TelaAddPerfil();
+                      }),
+                    );
+                  },
+                  child: ReusableCard(
+                    cor: Color(0xff15EBC4),
+                  ),
+                ),
+                margin: EdgeInsets.all(50.0),
+                decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(10.0),
+                    boxShadow: [
+                      BoxShadow(
+                        color: Colors.grey[300],
+                        spreadRadius: 4,
+                        blurRadius: 10,
+                        offset: Offset(0, 3),
+                      )
+                    ],
+                    color: Color(0xFF15EBC4)),
+                width: 100.0,
+                height: 100.0,
+              ),
       ),
     );
   }
@@ -84,33 +130,3 @@ class ReusableCard extends StatelessWidget {
     );
   }
 }
-
-//  Row(
-//               children: [
-//                 Expanded(
-//                   child: GestureDetector(
-//                     onTap: () {
-//                       // setState(() {
-//                       //   updateCardCor(1);
-//                       // });
-//                     },
-//                     // child: ReusableCard(
-//                     //   cor: Color(0xff15EBC4),
-//                     //   cardChild:
-//                     // ),
-//                   ),
-//                 ),
-//                 Expanded(
-//                   child: GestureDetector(
-//                     onTap: () {
-//                       // setState(() {
-//                       //   updateCardCor(2);
-//                       // });
-//                     },
-//                     child: ReusableCard(
-//                       cor: Color(0xff15EBC4),
-//                     ),
-//                   ),
-//                 ),
-//               ],
-//             ),
