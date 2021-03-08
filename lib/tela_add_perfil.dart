@@ -7,6 +7,7 @@ import 'package:flutter/services.dart';
 import 'perfil_screen.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'tela_perfil.dart';
 
 class TelaAddPerfil extends StatelessWidget {
   final Widget child;
@@ -225,6 +226,11 @@ class TelaAddPerfil extends StatelessWidget {
                 RoundedButton(
                   text: "Criar",
                   press: () {
+                    Navigator.push(context,
+                        MaterialPageRoute(builder: (context) {
+                      return Background();
+                    }));
+
                     _firestore.collection('perfil').add(
                       {
                         'name_prof,': name_prof,
