@@ -2,46 +2,66 @@ import 'package:flutter/material.dart';
 import 'perfil_screen.dart';
 import 'rounded_button.dart';
 import 'constants.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'contact.dart';
 
 class Background extends StatelessWidget {
   final Widget child;
-  const Background({
+  Background({
     Key key,
     @required this.child,
   }) : super(key: key);
+
+  final _firestore = FirebaseFirestore.instance;
+  CollectionReference perfil = FirebaseFirestore.instance.collection('perfil');
+
+  List<Contact> listaContato = <Contact>[];
+
+  Future<dynamic> getData() async {
+    CollectionReference querySnapshot = await _firestore.collection('perfil');
+
+    await querySnapshot.get().then<dynamic>((QuerySnapshot snapshot) async {
+      listaContato = snapshot.docs
+          .map((document) => Contact.fromJson(document.data()))
+          .toList();
+
+      listaContato.forEach((contato) {
+        print("${contato.famNameProf}, ${contato.nameProf}");
+      });
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
     Size size = MediaQuery.of(context).size;
     return Scaffold(
-      appBar: PreferredSize(
-        preferredSize: Size.fromHeight(60.0),
-        child: AppBar(
-          centerTitle: true,
-          title: Text(
-            'Perfil',
-            style: TextStyle(
-                fontWeight: FontWeight.bold,
-                fontSize: 36,
-                shadows: [
-                  Shadow(
-                    blurRadius: 10.0,
-                    color: Color(0xFF0FA086),
-                    offset: Offset(5.0, 5.0),
-                  ),
-                ],
-                fontFamily: 'Monda'),
+        appBar: PreferredSize(
+          preferredSize: Size.fromHeight(60.0),
+          child: AppBar(
+            centerTitle: true,
+            title: Text(
+              'Perfil',
+              style: TextStyle(
+                  fontWeight: FontWeight.bold,
+                  fontSize: 36,
+                  shadows: [
+                    Shadow(
+                      blurRadius: 10.0,
+                      color: Color(0xFF0FA086),
+                      offset: Offset(5.0, 5.0),
+                    ),
+                  ],
+                  fontFamily: 'Monda'),
+            ),
+            elevation: 5,
+            flexibleSpace: Image(
+              image: AssetImage('images/appbar.png'),
+              fit: BoxFit.cover,
+            ),
+            backgroundColor: Colors.transparent,
           ),
-          elevation: 5,
-          flexibleSpace: Image(
-            image: AssetImage('images/appbar.png'),
-            fit: BoxFit.cover,
-          ),
-          backgroundColor: Colors.transparent,
         ),
-      ),
-      body: Column(
-        children: <Widget>[
+        body: Column(children: <Widget>[
           Expanded(
             child: ListView(
               padding: const EdgeInsets.all(10),
@@ -135,20 +155,15 @@ class Background extends StatelessWidget {
                   onChanged: (value) {},
                 ),
                 RoundedButton(
-                  text: "Criar",
+                  text: "Editar",
                   press: () {
-                    Navigator.push(context,
-                        MaterialPageRoute(builder: (context) {
-                      return PerfilScreen();
-                    }));
+                    getData();
                   },
-                ),
+                )
               ],
             ),
-          ),
-        ],
-      ),
-    );
+          )
+        ]));
   }
 }
 
