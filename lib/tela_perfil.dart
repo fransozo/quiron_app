@@ -1,38 +1,32 @@
 import 'package:flutter/material.dart';
-import 'perfil_screen.dart';
+import 'rounded_input_field.dart';
 import 'rounded_button.dart';
 import 'constants.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'contact.dart';
 
-class Background extends StatelessWidget {
+final _firestore = FirebaseFirestore.instance;
+
+class TelaPerfil extends StatelessWidget {
   final Widget child;
-  Background({
+  TelaPerfil({
     Key key,
     @required this.child,
   }) : super(key: key);
 
-  final _firestore = FirebaseFirestore.instance;
-  CollectionReference perfil = FirebaseFirestore.instance.collection('perfil');
+  String nome;
 
-  List<Contact> listaContato = <Contact>[];
-
-  Future<dynamic> getData() async {
-    CollectionReference querySnapshot = await _firestore.collection('perfil');
-
-    await querySnapshot.get().then<dynamic>((QuerySnapshot snapshot) async {
-      listaContato = snapshot.docs
-          .map((document) => Contact.fromJson(document.data()))
-          .toList();
-
-      listaContato.forEach((contato) {
-        print("${contato.famNameProf}, ${contato.nameProf}");
-      });
-    });
+  void getDados() async {
+    await for (var snapshot in _firestore.collection('perfil').snapshots()) {
+      for (var dado in snapshot.docs) {
+        print(dado.data());
+      }
+    }
   }
 
   @override
   Widget build(BuildContext context) {
+    getDados();
+
     Size size = MediaQuery.of(context).size;
     return Scaffold(
         appBar: PreferredSize(
@@ -90,75 +84,68 @@ class Background extends StatelessWidget {
                     ),
                   ],
                 ),
-                Rounded_InputField(
-                  hintText: "Nome",
-                  onChanged: (value) {},
-                ),
-                Rounded_InputField(
-                  hintText: "Sobrenome",
-                  onChanged: (value) {},
-                ),
-                Rounded_InputField(
-                  hintText: "Nascimento",
-                  onChanged: (value) {},
-                ),
-                Rounded_InputField(
-                  hintText: "RG",
-                  onChanged: (value) {},
-                ),
-                Rounded_InputField(
-                  hintText: "Nome da Mãe",
-                  onChanged: (value) {},
-                ),
-                Rounded_InputField(
-                  hintText: "Grau de Proximidade",
-                  onChanged: (value) {},
-                ),
-                Rounded_InputField(
-                  hintText: "Sexo",
-                  onChanged: (value) {},
-                ),
-                Rounded_InputField(
-                  hintText: "Altura",
-                  onChanged: (value) {},
-                ),
-                Rounded_InputField(
-                  hintText: "Peso",
-                  onChanged: (value) {},
-                ),
-                Rounded_InputField(
-                  hintText: "Doenças Preexistentes",
-                  onChanged: (value) {},
-                ),
-                Rounded_InputField(
-                  hintText: "Remédios de uso Contínuo",
-                  onChanged: (value) {},
-                ),
-                Rounded_InputField(
-                  hintText: "Possui Alergia a algum medicamento?",
-                  onChanged: (value) {},
-                ),
-                Rounded_InputField(
-                  hintText: "Qual medicamento?",
-                  onChanged: (value) {},
-                ),
-                Rounded_InputField(
-                  hintText: "Tipo Sanguíneo",
-                  onChanged: (value) {},
-                ),
-                Rounded_InputField(
-                  hintText: "Possui Plano de Saúde?",
-                  onChanged: (value) {},
-                ),
-                Rounded_InputField(
-                  hintText: "Número da Carteirinha",
-                  onChanged: (value) {},
+                StreamBuilder<QuerySnapshot>(
+                  stream: _firestore.collection('perfil').snapshots(),
+                  builder: (context, snapshot) {
+                    if (!snapshot.hasData) {
+                      return Center(
+                        child: CircularProgressIndicator(
+                          backgroundColor: Color(0xff15EBC4),
+                        ),
+                      );
+                    }
+
+                    final dados = snapshot.data.docs;
+                    List<InputField> dadosWidgets = [];
+                    for (var dado in dados) {
+                      final dadoName = dado.get('name_prof');
+                      final dadoFamName = dado.get('fam_name_prof');
+                      final dadoAllergy = dado.get('allergy_prof');
+                      final dadoBirth = dado.get('birth_prof');
+                      final dadoDise = dado.get('dise_prof');
+                      final dadoHealth = dado.get('health_prof');
+                      final dadoHeight = dado.get('height_prof');
+                      final dadoMAlergy = dado.get('m_allergy_prof');
+                      final dadoMedici = dado.get('medicine_prof');
+                      final dadoMom = dado.get('mom_name_prof');
+                      final dadoNHealth = dado.get('n_health_prof');
+                      final dadoProx = dado.get('prox_prof');
+                      final dadoRG = dado.get('rg_prof');
+                      final dadoSex = dado.get('sex_prof');
+                      final dadoWeight = dado.get('weight_prof');
+                      final dadoBlood = dado.get('blood_prof');
+                      final dadoChoiceHealth = dado.get('choice_health_prof');
+
+                      final dadosWidget = InputField(
+                        textName: dadoName,
+                        textFamName: dadoFamName,
+                        textAllergy: dadoAllergy,
+                        textBirth: dadoBirth,
+                        textDise: dadoDise,
+                        textHealth: dadoHealth,
+                        textHeight: dadoHeight,
+                        textMAlergy: dadoMAlergy,
+                        textMedici: dadoMedici,
+                        textMom: dadoMom,
+                        textNHealth: dadoNHealth,
+                        textProx: dadoProx,
+                        textRG: dadoRG,
+                        textSex: dadoSex,
+                        textWeight: dadoWeight,
+                        textBlood: dadoBlood,
+                        textChoiceHealth: dadoChoiceHealth,
+                      );
+
+                      dadosWidgets.add(dadosWidget);
+                    }
+                    return Column(
+                      children: dadosWidgets,
+                    );
+                  },
                 ),
                 RoundedButton(
                   text: "Editar",
-                  press: () {
-                    getData();
-                  },
+                  press: () {},
                 )
               ],
             ),
@@ -181,34 +168,115 @@ class ReusableCard extends StatelessWidget {
   }
 }
 
-class Rounded_InputField extends StatelessWidget {
-  final String hintText;
-  final IconData icon;
-  final ValueChanged<String> onChanged;
-  const Rounded_InputField({
-    Key key,
-    this.hintText,
-    this.icon,
-    this.onChanged,
-  }) : super(key: key);
+class InputField extends StatelessWidget {
+  InputField({
+    this.textName,
+    this.textFamName,
+    this.textAllergy,
+    this.textBirth,
+    this.textDise,
+    this.textHealth,
+    this.textHeight,
+    this.textMAlergy,
+    this.textMedici,
+    this.textMom,
+    this.textNHealth,
+    this.textProx,
+    this.textRG,
+    this.textSex,
+    this.textWeight,
+    this.textBlood,
+    this.textChoiceHealth,
+  });
+
+  final String textName;
+  final String textFamName;
+  final String textAllergy;
+  final String textBirth;
+  final String textDise;
+  final String textHealth;
+  final String textHeight;
+  final String textMAlergy;
+  final String textMedici;
+  final String textMom;
+  final String textNHealth;
+  final String textProx;
+  final String textRG;
+  final String textSex;
+  final String textWeight;
+  final String textChoiceHealth;
+  final String textBlood;
 
   @override
   Widget build(BuildContext context) {
-    return TextField_Container(
-      child: TextField(
-        readOnly: true,
-        style: TextStyle(color: Colors.black54, fontFamily: 'Monda'),
-        onChanged: onChanged,
-        cursorColor: kPrimaryColor,
-        decoration: InputDecoration(
-          icon: Icon(
-            icon,
-            color: kPrimaryColor,
-          ),
-          hintText: hintText,
-          border: InputBorder.none,
+    Size size = MediaQuery.of(context).size;
+    return Column(
+      children: <Widget>[
+        RoundedInputField(
+          hintText: '$textName $textFamName',
+          onChanged: (value) {},
         ),
-      ),
+        RoundedInputField(
+          hintText: textBirth,
+          onChanged: (value) {},
+        ),
+        RoundedInputField(
+          hintText: textRG,
+          onChanged: (value) {},
+        ),
+        RoundedInputField(
+          hintText: textMom,
+          onChanged: (value) {},
+        ),
+        RoundedInputField(
+          hintText: textProx,
+          onChanged: (value) {},
+        ),
+        RoundedInputField(
+          hintText: textSex,
+          onChanged: (value) {},
+        ),
+        RoundedInputField(
+          hintText: '$textHeight cm',
+          onChanged: (value) {},
+        ),
+        RoundedInputField(
+          hintText: '$textWeight Kg',
+          onChanged: (value) {},
+        ),
+        RoundedInputField(
+          hintText: textDise,
+          onChanged: (value) {},
+        ),
+        RoundedInputField(
+          hintText: textMedici,
+          onChanged: (value) {},
+        ),
+        RoundedInputField(
+          hintText: textAllergy,
+          onChanged: (value) {},
+        ),
+        RoundedInputField(
+          hintText: textMAlergy,
+          onChanged: (value) {},
+        ),
+        RoundedInputField(
+          hintText: textBlood,
+          onChanged: (value) {},
+        ),
+        RoundedInputField(
+          hintText: textChoiceHealth,
+          onChanged: (value) {},
+        ),
+        RoundedInputField(
+          hintText: textHealth,
+          onChanged: (value) {},
+        ),
+        RoundedInputField(
+          hintText: textNHealth,
+          onChanged: (value) {},
+        ),
+      ],
     );
   }
 }

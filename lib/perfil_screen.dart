@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'tela_add_perfil.dart';
 import 'tela_login.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'tela_perfil.dart';
 
 class PerfilScreen extends StatefulWidget {
   @override
@@ -78,34 +79,67 @@ class _PerfilScreen extends State<PerfilScreen> {
       body: Center(
         child: !isloggedin
             ? CircularProgressIndicator()
-            : Container(
-                child: GestureDetector(
-                  onTap: () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(builder: (context) {
-                        return TelaAddPerfil();
-                      }),
-                    );
-                  },
-                  child: ReusableCard(
-                    cor: Color(0xff15EBC4),
+            : Column(
+                children: <Widget>[
+                  Container(
+                    child: GestureDetector(
+                      onTap: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(builder: (context) {
+                            return TelaAddPerfil();
+                          }),
+                        );
+                      },
+                      child: ReusableCard(
+                        cor: Colors.blueAccent,
+                      ),
+                    ),
+                    margin: EdgeInsets.all(50.0),
+                    decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(10.0),
+                        boxShadow: [
+                          BoxShadow(
+                            color: Colors.grey[300],
+                            spreadRadius: 4,
+                            blurRadius: 10,
+                            offset: Offset(0, 3),
+                          )
+                        ],
+                        color: Color(0xFF15EBC4)),
+                    width: 100.0,
+                    height: 100.0,
                   ),
-                ),
-                margin: EdgeInsets.all(50.0),
-                decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(10.0),
-                    boxShadow: [
-                      BoxShadow(
-                        color: Colors.grey[300],
-                        spreadRadius: 4,
-                        blurRadius: 10,
-                        offset: Offset(0, 3),
-                      )
-                    ],
-                    color: Color(0xFF15EBC4)),
-                width: 100.0,
-                height: 100.0,
+                  Container(
+                    child: GestureDetector(
+                      onTap: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(builder: (context) {
+                            return TelaPerfil();
+                          }),
+                        );
+                      },
+                      child: ReusableCard(
+                        cor: Colors.blueAccent,
+                      ),
+                    ),
+                    margin: EdgeInsets.all(50.0),
+                    decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(10.0),
+                        boxShadow: [
+                          BoxShadow(
+                            color: Colors.grey[300],
+                            spreadRadius: 4,
+                            blurRadius: 10,
+                            offset: Offset(0, 3),
+                          )
+                        ],
+                        color: Color(0xFF15EBC4)),
+                    width: 100.0,
+                    height: 100.0,
+                  ),
+                ],
               ),
       ),
     );

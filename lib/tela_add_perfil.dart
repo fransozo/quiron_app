@@ -7,7 +7,7 @@ import 'package:flutter/services.dart';
 import 'perfil_screen.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'tela_perfil.dart';
+import 'perfil_screen.dart';
 
 class TelaAddPerfil extends StatelessWidget {
   final Widget child;
@@ -228,7 +228,7 @@ class TelaAddPerfil extends StatelessWidget {
                   press: () {
                     Navigator.push(context,
                         MaterialPageRoute(builder: (context) {
-                      return Background();
+                      return PerfilScreen();
                     }));
 
                     _firestore.collection('perfil').add(
