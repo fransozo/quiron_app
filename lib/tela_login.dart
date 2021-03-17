@@ -14,9 +14,19 @@ class TelaLogin extends StatefulWidget {
 
 class _TelaLogin extends State<TelaLogin> {
   final _auth = FirebaseAuth.instance;
+  final formKey = new GlobalKey<FormState>();
 
   String email;
   String pass;
+
+  void validateAndSave() {
+    final form = formKey.currentState;
+    if (form.validate()) {
+      print("Formulário Válido");
+    } else {
+      print("Formulário Inválido");
+    }
+  }
 
   Widget build(BuildContext context) {
     Size size = MediaQuery.of(context).size;
@@ -52,89 +62,99 @@ class _TelaLogin extends State<TelaLogin> {
           Expanded(
             child: ListView(
               children: <Widget>[
-                Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: <Widget>[
-                    Image.asset(
-                      "images/quiron_logo.png",
-                      width: 250,
-                      height: 200,
-                    ),
-                    SizedBox(height: size.height * 0.03),
-                    SizedBox(height: size.height * 0.03),
-                    TextFieldContainer(
-                      child: TextField(
-                        keyboardType: TextInputType.emailAddress,
-                        style: TextStyle(
-                            color: Colors.black54, fontFamily: 'Monda'),
-                        onChanged: (value) {
-                          email = value;
-                        },
-                        cursorColor: kPrimaryColor,
-                        decoration: InputDecoration(
-                          icon: Icon(
-                            Icons.person,
-                            color: kPrimaryColor,
+                Form(
+                  key: formKey,
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: <Widget>[
+                      Image.asset(
+                        "images/quiron_logo.png",
+                        width: 250,
+                        height: 200,
+                      ),
+                      SizedBox(height: size.height * 0.03),
+                      SizedBox(height: size.height * 0.03),
+                      TextFieldContainer(
+                        child: TextFormField(
+                          validator: (value) => value.isEmpty
+                              ? "Favor inserir um endereço de e-mail"
+                              : null,
+                          keyboardType: TextInputType.emailAddress,
+                          style: TextStyle(
+                              color: Colors.black54, fontFamily: 'Monda'),
+                          onChanged: (value) {
+                            email = value;
+                          },
+                          cursorColor: kPrimaryColor,
+                          decoration: InputDecoration(
+                            icon: Icon(
+                              Icons.person,
+                              color: kPrimaryColor,
+                            ),
+                            hintText: "E-mail",
+                            border: InputBorder.none,
                           ),
-                          hintText: "E-mail",
-                          border: InputBorder.none,
                         ),
                       ),
-                    ),
-                    TextFieldContainer(
-                      child: TextField(
-                        obscureText: true,
-                        style: TextStyle(
-                            color: Colors.black54, fontFamily: 'Monda'),
-                        onChanged: (value) {
-                          pass = value;
-                        },
-                        cursorColor: kPrimaryColor,
-                        decoration: InputDecoration(
-                          icon: Icon(
-                            Icons.lock,
-                            color: kPrimaryColor,
+                      TextFieldContainer(
+                        child: TextFormField(
+                          validator: (value) =>
+                              value.isEmpty ? "Favor preencher a senha" : null,
+                          obscureText: true,
+                          style: TextStyle(
+                              color: Colors.black54, fontFamily: 'Monda'),
+                          onChanged: (value) {
+                            pass = value;
+                          },
+                          cursorColor: kPrimaryColor,
+                          decoration: InputDecoration(
+                            icon: Icon(
+                              Icons.lock,
+                              color: kPrimaryColor,
+                            ),
+                            hintText: "Senha",
+                            border: InputBorder.none,
                           ),
-                          hintText: "Senha",
-                          border: InputBorder.none,
                         ),
                       ),
-                    ),
-                    RoundedButton(
-                      text: "Entrar",
-                      press: () async {
-                        try {
-                          final user = await _auth.signInWithEmailAndPassword(
-                              email: email, password: pass);
-                          if (user != null) {
-                            Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                builder: (context) {
-                                  return PerfilScreen();
-                                },
-                              ),
-                            );
-                          }
-                        } catch (e) {
-                          print(e);
-                        }
-                      },
-                    ),
-                    SizedBox(height: size.height * 0.03),
-                    AlreadyHaveAnAccountCheck(
-                      press: () {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (context) {
-                              return SignUpScreen();
-                            },
-                          ),
-                        );
-                      },
-                    ),
-                  ],
+                      RoundedButton(
+                        text: "Entrar",
+                        press: () {
+                          validateAndSave();
+
+                          // try {
+                          //   final user = await _auth.signInWithEmailAndPassword(
+                          //       email: email, password: pass);
+                          //   if (user != null) {
+                          //     Navigator.push(
+                          //       context,
+                          //       MaterialPageRoute(
+                          //         builder: (context) {
+                          //           return PerfilScreen();
+                          //         },
+                          //       ),
+                          //     );
+                          //   }
+                          // } catch (e) {
+                          //   print(e);
+                          // }
+                        },
+                      ),
+                      SizedBox(height: size.height * 0.03),
+                      AlreadyHaveAnAccountCheck(
+                        press: () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) {
+                                return SignUpScreen();
+                              },
+                            ),
+                          );
+                        },
+                      ),
+                    ],
+                  ),
                 ),
               ],
             ),

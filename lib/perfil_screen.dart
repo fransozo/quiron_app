@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'tela_add_perfil.dart';
+import 'constants.dart';
 import 'tela_login.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'tela_perfil.dart';
@@ -83,61 +84,56 @@ class _PerfilScreen extends State<PerfilScreen> {
                 children: <Widget>[
                   Container(
                     child: GestureDetector(
-                      onTap: () {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(builder: (context) {
-                            return TelaAddPerfil();
-                          }),
-                        );
-                      },
-                      child: ReusableCard(
-                        cor: Colors.blueAccent,
+                      child: Card(
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(29.0),
+                        ),
+                        color: kPrimaryLightColor,
+                        child: Padding(
+                          padding: EdgeInsets.all(10.0),
+                          child: Row(
+                            children: <Widget>[
+                              Container(
+                                /*child: Image(
+                                  image: AssetImage('images/images.png')
+                                ),*/
+                                width: 80.0,
+                                height: 80.0,
+                                decoration: BoxDecoration(
+                                  image: DecorationImage(
+                                    image: AssetImage('images/cayo.png'),
+                                  ),
+                                  shape: BoxShape.circle,
+                                ),
+                              ),
+                              Padding(
+                                padding: EdgeInsets.only(left: 10.0),
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: <Widget>[
+                                    Container(
+                                      // color: Colors.red,
+                                      padding: EdgeInsets.only(bottom: 10.0),
+                                      child: Text(
+                                        "Cayo Falavinha",
+                                        style: TextStyle(
+                                            color: Colors.black54,
+                                            fontSize: 20.0,
+                                            fontWeight: FontWeight.bold),
+                                      ),
+                                    ),
+                                    Text("RG: 733.188.33",
+                                        style: TextStyle(
+                                            color: Colors.black54,
+                                            fontSize: 17.0)),
+                                  ],
+                                ),
+                              )
+                            ],
+                          ),
+                        ),
                       ),
                     ),
-                    margin: EdgeInsets.all(50.0),
-                    decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(10.0),
-                        boxShadow: [
-                          BoxShadow(
-                            color: Colors.grey[300],
-                            spreadRadius: 4,
-                            blurRadius: 10,
-                            offset: Offset(0, 3),
-                          )
-                        ],
-                        color: Color(0xFF15EBC4)),
-                    width: 100.0,
-                    height: 100.0,
-                  ),
-                  Container(
-                    child: GestureDetector(
-                      onTap: () {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(builder: (context) {
-                            return TelaPerfil();
-                          }),
-                        );
-                      },
-                      child: ReusableCard(
-                        cor: Colors.blueAccent,
-                      ),
-                    ),
-                    margin: EdgeInsets.all(50.0),
-                    decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(10.0),
-                        boxShadow: [
-                          BoxShadow(
-                            color: Colors.grey[300],
-                            spreadRadius: 4,
-                            blurRadius: 10,
-                            offset: Offset(0, 3),
-                          )
-                        ],
-                        color: Color(0xFF15EBC4)),
-                    width: 100.0,
-                    height: 100.0,
                   ),
                 ],
               ),

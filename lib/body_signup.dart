@@ -173,18 +173,18 @@ class _Body extends State<Body> {
                   Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: <Widget>[
-                      SocalIcon(
-                        iconSrc: "images/icons/facebook.svg",
-                        press: () {},
-                      ),
-                      SocalIcon(
-                        iconSrc: "images/icons/twitter.svg",
-                        press: () {},
-                      ),
-                      SocalIcon(
-                        iconSrc: "images/icons/google-plus.svg",
-                        press: () {},
-                      ),
+                      // SocalIcon(
+                      //   iconSrc: "images/icons/facebook.svg",
+                      //   press: () {},
+                      // ),
+                      // SocalIcon(
+                      //   iconSrc: "images/icons/twitter.svg",
+                      //   press: () {},
+                      // ),
+                      // SocalIcon(
+                      //   iconSrc: "images/icons/google-plus.svg",
+                      //   press: () {},
+                      // ),
                     ],
                   )
                 ],
