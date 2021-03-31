@@ -3,7 +3,6 @@ import 'tela_add_perfil.dart';
 import 'constants.dart';
 import 'tela_login.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'tela_perfil.dart';
 
 class PerfilScreen extends StatefulWidget {
   @override

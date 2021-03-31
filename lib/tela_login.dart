@@ -119,25 +119,24 @@ class _TelaLogin extends State<TelaLogin> {
                       ),
                       RoundedButton(
                         text: "Entrar",
-                        press: () {
+                        press: () async {
+                          try {
+                            final user = await _auth.signInWithEmailAndPassword(
+                                email: email, password: pass);
+                            if (user != null) {
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (context) {
+                                    return PerfilScreen();
+                                  },
+                                ),
+                              );
+                            }
+                          } catch (e) {
+                            print(e);
+                          }
                           validateAndSave();
-
-                          // try {
-                          //   final user = await _auth.signInWithEmailAndPassword(
-                          //       email: email, password: pass);
-                          //   if (user != null) {
-                          //     Navigator.push(
-                          //       context,
-                          //       MaterialPageRoute(
-                          //         builder: (context) {
-                          //           return PerfilScreen();
-                          //         },
-                          //       ),
-                          //     );
-                          //   }
-                          // } catch (e) {
-                          //   print(e);
-                          // }
                         },
                       ),
                       SizedBox(height: size.height * 0.03),
