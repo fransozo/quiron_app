@@ -8,6 +8,7 @@ import 'perfil_screen.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'perfil_screen.dart';
+import 'tela_login.dart';
 
 class TelaAddPerfil extends StatelessWidget {
   final Widget child;
@@ -16,6 +17,16 @@ class TelaAddPerfil extends StatelessWidget {
     this.child,
   }) : super(key: key);
   final _firestore = FirebaseFirestore.instance;
+  final _auth = FirebaseAuth.instance;
+
+  String emailUser;
+  String email;
+
+  void getCurrentUserEmail() async {
+    User emailUser = _auth.currentUser;
+    email = emailUser.email;
+    //print("$email");
+  }
 
   String name_prof,
       fam_name_prof,
@@ -33,7 +44,52 @@ class TelaAddPerfil extends StatelessWidget {
       n_health_prof,
       id_user,
       height_prof,
+      qtdPerfis,
       weight_prof;
+
+  Future<String> documentId() async {
+    getCurrentUserEmail();
+    QuerySnapshot resultado = await _firestore
+        .collection("usuarios")
+        .where("emailUser", isEqualTo: "$email")
+        .get();
+    resultado.docs.forEach((d) {
+      qtdPerfis = d.get('qtd_perfil');
+      print("Print da função $qtdPerfis");
+    });
+
+    return qtdPerfis;
+  }
+
+  showAlertDialog(BuildContext context) {
+    // set up the button
+    Widget okButton = TextButton(
+      child: Text("OK"),
+      onPressed: () {
+        Navigator.push(context, MaterialPageRoute(builder: (context) {
+          return PerfilScreen();
+        }));
+      },
+    );
+
+    // set up the AlertDialog
+    AlertDialog alert = AlertDialog(
+      title: Text("Alerta"),
+      content: Text(
+          "Número máximo de perfis atingido. Caso seja necessário exclua um perfil."),
+      actions: [
+        okButton,
+      ],
+    );
+
+    // show the dialog
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return alert;
+      },
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -230,10 +286,16 @@ class TelaAddPerfil extends StatelessWidget {
                         MaterialPageRoute(builder: (context) {
                       return PerfilScreen();
                     }));
+                    //documentId();
+
+                    //       _firestore.collection('usuarios').add({
+                    //                    'qtd_perfil':
+//
+                    //    });
 
                     _firestore.collection('perfil').add(
                       {
-                        'name_prof,': name_prof,
+                        'name_prof': name_prof,
                         'fam_name_prof': fam_name_prof,
                         'birth_prof': birth_prof,
                         'rg_prof': rg_prof,
@@ -242,16 +304,35 @@ class TelaAddPerfil extends StatelessWidget {
                         'sex_prof': sex_prof,
                         'dise_prof': dise_prof,
                         'medicine_prof': medicine_prof,
-                        'allergy_prof': allergy_prof,
                         'd_allergy_prof': d_allergy_prof,
+                        'allergy_prof': allergy_prof,
                         'blood_prof': blood_prof,
                         'health_prof': health_prof,
                         'n_health_prof': n_health_prof,
-                        'id_user': id_user,
                         'height_prof': height_prof,
                         'weight_prof': weight_prof,
+                        'id_user': email,
                       },
                     );
+                  },
+                ),
+                RoundedButton(
+                  text: "TESTE",
+                  press: () async {
+                    dynamic qtd = await documentId();
+                    if (qtd == '0') {
+                      print(qtd);
+                    } else if (qtd == '1') {
+                      print(qtd);
+                    } else if (qtd == '2') {
+                      print(qtd);
+                    } else if (qtd == '3') {
+                      print(qtd);
+                    } else if (qtd == '4') {
+                      print(qtd);
+                    } else {
+                      showAlertDialog(context);
+                    }
                   },
                 ),
               ],

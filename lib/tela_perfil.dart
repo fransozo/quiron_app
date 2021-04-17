@@ -8,12 +8,9 @@ final _firestore = FirebaseFirestore.instance;
 
 class TelaPerfil extends StatelessWidget {
   final Widget child;
-  TelaPerfil({
-    Key key,
-    @required this.child,
-  }) : super(key: key);
+  TelaPerfil({Key key, @required this.child, this.rgPerfil}) : super(key: key);
 
-  String nome;
+  String rgPerfil;
 
   void getDados() async {
     await for (var snapshot in _firestore.collection('perfil').snapshots()) {
@@ -85,7 +82,10 @@ class TelaPerfil extends StatelessWidget {
                   ],
                 ),
                 StreamBuilder<QuerySnapshot>(
-                  stream: _firestore.collection('perfil').snapshots(),
+                  stream: _firestore
+                      .collection('perfil')
+                      .where("rg_prof", isEqualTo: '$rgPerfil')
+                      .snapshots(),
                   builder: (context, snapshot) {
                     if (!snapshot.hasData) {
                       return Center(
@@ -105,7 +105,7 @@ class TelaPerfil extends StatelessWidget {
                       final dadoDise = dado.get('dise_prof');
                       final dadoHealth = dado.get('health_prof');
                       final dadoHeight = dado.get('height_prof');
-                      final dadoMAlergy = dado.get('m_allergy_prof');
+                      final dadoDAlergy = dado.get('d_allergy_prof');
                       final dadoMedici = dado.get('medicine_prof');
                       final dadoMom = dado.get('mom_name_prof');
                       final dadoNHealth = dado.get('n_health_prof');
@@ -114,7 +114,6 @@ class TelaPerfil extends StatelessWidget {
                       final dadoSex = dado.get('sex_prof');
                       final dadoWeight = dado.get('weight_prof');
                       final dadoBlood = dado.get('blood_prof');
-                      final dadoChoiceHealth = dado.get('choice_health_prof');
 
                       final dadosWidget = InputField(
                         textName: dadoName,
@@ -124,7 +123,7 @@ class TelaPerfil extends StatelessWidget {
                         textDise: dadoDise,
                         textHealth: dadoHealth,
                         textHeight: dadoHeight,
-                        textMAlergy: dadoMAlergy,
+                        textDAlergy: dadoDAlergy,
                         textMedici: dadoMedici,
                         textMom: dadoMom,
                         textNHealth: dadoNHealth,
@@ -133,7 +132,6 @@ class TelaPerfil extends StatelessWidget {
                         textSex: dadoSex,
                         textWeight: dadoWeight,
                         textBlood: dadoBlood,
-                        textChoiceHealth: dadoChoiceHealth,
                       );
 
                       dadosWidgets.add(dadosWidget);
@@ -177,7 +175,7 @@ class InputField extends StatelessWidget {
     this.textDise,
     this.textHealth,
     this.textHeight,
-    this.textMAlergy,
+    this.textDAlergy,
     this.textMedici,
     this.textMom,
     this.textNHealth,
@@ -186,7 +184,6 @@ class InputField extends StatelessWidget {
     this.textSex,
     this.textWeight,
     this.textBlood,
-    this.textChoiceHealth,
   });
 
   final String textName;
@@ -196,7 +193,7 @@ class InputField extends StatelessWidget {
   final String textDise;
   final String textHealth;
   final String textHeight;
-  final String textMAlergy;
+  final String textDAlergy;
   final String textMedici;
   final String textMom;
   final String textNHealth;
@@ -204,7 +201,7 @@ class InputField extends StatelessWidget {
   final String textRG;
   final String textSex;
   final String textWeight;
-  final String textChoiceHealth;
+
   final String textBlood;
 
   @override
@@ -257,15 +254,11 @@ class InputField extends StatelessWidget {
           onChanged: (value) {},
         ),
         RoundedInputField(
-          hintText: textMAlergy,
+          hintText: textDAlergy,
           onChanged: (value) {},
         ),
         RoundedInputField(
           hintText: textBlood,
-          onChanged: (value) {},
-        ),
-        RoundedInputField(
-          hintText: textChoiceHealth,
           onChanged: (value) {},
         ),
         RoundedInputField(

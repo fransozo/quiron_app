@@ -4,6 +4,7 @@ import 'tela_login.dart';
 import 'perfil_screen.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
+import 'Firebase/root_page.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -71,6 +72,6 @@ class MyApp extends StatelessWidget {
             ),
             backgroundColor: Color(0xff15EBC4),
             splashIconSize: 200,
-            nextScreen: TelaLogin()));
+            nextScreen: RootPage()));
   }
 }
