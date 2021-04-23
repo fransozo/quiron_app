@@ -25,7 +25,7 @@ class TelaAddPerfil extends StatelessWidget {
   void getCurrentUserEmail() async {
     User emailUser = _auth.currentUser;
     email = emailUser.email;
-    //print("$email");
+    print("$email");
   }
 
   String name_prof,
@@ -45,6 +45,7 @@ class TelaAddPerfil extends StatelessWidget {
       id_user,
       height_prof,
       qtdPerfis,
+      idDoc,
       weight_prof;
 
   Future<String> documentId() async {
@@ -55,10 +56,47 @@ class TelaAddPerfil extends StatelessWidget {
         .get();
     resultado.docs.forEach((d) {
       qtdPerfis = d.get('qtd_perfil');
-      print("Print da função $qtdPerfis");
+      print("Print da função $qtdPerfis & $idDoc");
     });
 
     return qtdPerfis;
+  }
+
+  getDocId() async {
+    getCurrentUserEmail();
+    QuerySnapshot resultado = await _firestore
+        .collection("usuarios")
+        .where("emailUser", isEqualTo: "$email")
+        .get();
+    resultado.docs.forEach((d) {
+      idDoc = d.id;
+      print(d.id);
+    });
+    return idDoc;
+  }
+
+  void addPerfil() {
+    _firestore.collection('perfil').add(
+      {
+        'name_prof': name_prof,
+        'fam_name_prof': fam_name_prof,
+        'birth_prof': birth_prof,
+        'rg_prof': rg_prof,
+        'mom_name_prof': mom_name_prof,
+        'prox_prof': prox_prof,
+        'sex_prof': sex_prof,
+        'dise_prof': dise_prof,
+        'medicine_prof': medicine_prof,
+        'd_allergy_prof': d_allergy_prof,
+        'allergy_prof': allergy_prof,
+        'blood_prof': blood_prof,
+        'health_prof': health_prof,
+        'n_health_prof': n_health_prof,
+        'height_prof': height_prof,
+        'weight_prof': weight_prof,
+        'id_user': email,
+      },
+    );
   }
 
   showAlertDialog(BuildContext context) {
@@ -281,39 +319,60 @@ class TelaAddPerfil extends StatelessWidget {
                 ),
                 RoundedButton(
                   text: "Criar",
-                  press: () {
-                    Navigator.push(context,
-                        MaterialPageRoute(builder: (context) {
-                      return PerfilScreen();
-                    }));
-                    //documentId();
+                  press: () async {
+                    documentId();
+                    getDocId();
+                    dynamic qtd = await documentId();
 
-                    //       _firestore.collection('usuarios').add({
-                    //                    'qtd_perfil':
-//
-                    //    });
+                    print("Print botão criar $idDoc");
 
-                    _firestore.collection('perfil').add(
-                      {
-                        'name_prof': name_prof,
-                        'fam_name_prof': fam_name_prof,
-                        'birth_prof': birth_prof,
-                        'rg_prof': rg_prof,
-                        'mom_name_prof': mom_name_prof,
-                        'prox_prof': prox_prof,
-                        'sex_prof': sex_prof,
-                        'dise_prof': dise_prof,
-                        'medicine_prof': medicine_prof,
-                        'd_allergy_prof': d_allergy_prof,
-                        'allergy_prof': allergy_prof,
-                        'blood_prof': blood_prof,
-                        'health_prof': health_prof,
-                        'n_health_prof': n_health_prof,
-                        'height_prof': height_prof,
-                        'weight_prof': weight_prof,
-                        'id_user': email,
-                      },
-                    );
+                    if (qtd == '0') {
+                      _firestore
+                          .collection('usuarios')
+                          .doc(idDoc)
+                          .update({'qtd_perfil': '1'});
+                      addPerfil();
+                      print(qtd);
+                      Navigator.push(context,
+                          MaterialPageRoute(builder: (context) {
+                        return PerfilScreen();
+                      }));
+                    } else if (qtd == '1') {
+                      _firestore
+                          .collection('usuarios')
+                          .doc(idDoc)
+                          .update({'qtd_perfil': '2'});
+                      addPerfil();
+                      print(qtd);
+                      Navigator.push(context,
+                          MaterialPageRoute(builder: (context) {
+                        return PerfilScreen();
+                      }));
+                    } else if (qtd == '2') {
+                      _firestore
+                          .collection('usuarios')
+                          .doc(idDoc)
+                          .update({'qtd_perfil': '3'});
+                      addPerfil();
+                      print(qtd);
+                      Navigator.push(context,
+                          MaterialPageRoute(builder: (context) {
+                        return PerfilScreen();
+                      }));
+                    } else if (qtd == '3') {
+                      _firestore
+                          .collection('usuarios')
+                          .doc(idDoc)
+                          .update({'qtd_perfil': '4'});
+                      addPerfil();
+                      print(qtd);
+                      Navigator.push(context,
+                          MaterialPageRoute(builder: (context) {
+                        return PerfilScreen();
+                      }));
+                    } else {
+                      showAlertDialog(context);
+                    }
                   },
                 ),
                 RoundedButton(

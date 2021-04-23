@@ -3,6 +3,7 @@ import 'rounded_input_field.dart';
 import 'rounded_button.dart';
 import 'constants.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'consulta.dart';
 
 final _firestore = FirebaseFirestore.instance;
 
@@ -141,10 +142,32 @@ class TelaPerfil extends StatelessWidget {
                     );
                   },
                 ),
-                RoundedButton(
-                  text: "Editar",
-                  press: () {},
-                )
+                Container(
+                  padding: EdgeInsets.symmetric(horizontal: 1, vertical: 5),
+                  width: size.width * 0.8,
+                  child: ClipRRect(
+                    borderRadius: BorderRadius.circular(29),
+                    child: TextButton(
+                        style: ButtonStyle(
+                          padding:
+                              MaterialStateProperty.all<EdgeInsetsGeometry>(
+                            EdgeInsets.symmetric(vertical: 10, horizontal: 40),
+                          ),
+                          backgroundColor: MaterialStateProperty.all<Color>(
+                            Color(0xFF15EBC4),
+                          ),
+                        ),
+                        onPressed: () {
+                          Navigator.push(context,
+                              MaterialPageRoute(builder: (context) {
+                            return Consulta(rgPerfil: '$rgPerfil');
+                          }));
+                        },
+                        child: Text("Consulta",
+                            style: TextStyle(
+                                fontSize: 30.0, color: Colors.white))),
+                  ),
+                ),
               ],
             ),
           )
