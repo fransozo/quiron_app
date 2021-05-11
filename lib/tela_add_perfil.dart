@@ -9,17 +9,82 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'perfil_screen.dart';
 import 'tela_login.dart';
+import 'drop_down_list.dart';
+import 'doencas_lista.dart';
 
-class TelaAddPerfil extends StatelessWidget {
+class TelaAddPerfil extends StatefulWidget {
   final Widget child;
   TelaAddPerfil({
     Key key,
     this.child,
   }) : super(key: key);
+
+  @override
+  _TelaAddPerfilState createState() => _TelaAddPerfilState();
+}
+
+class _TelaAddPerfilState extends State<TelaAddPerfil> {
+  String value = "";
+
+  List<MultiSelectDialogItem<int>> multiItem = List();
+
+  final valuestopopulate = {
+    1: "Hipertensão",
+    2: "Diabetes",
+    3: "Asma",
+    4: "Câncer",
+    5: "Artrite",
+    6: "Insuficiência Renal",
+    7: "Obesidade",
+    8: "Depressão",
+    9: "AVC",
+    10: "Colesterol Alto",
+  };
+
+  void populateMultiselect() {
+    for (int v in valuestopopulate.keys) {
+      multiItem.add(MultiSelectDialogItem(v, valuestopopulate[v]));
+    }
+  }
+
+  void showMultiSelect(BuildContext context) async {
+    multiItem = [];
+    populateMultiselect();
+    final items = multiItem;
+    // final items = <MultiSelectDialogItem<int>>[
+    //   MultiSelectDialogItem(1, 'India'),
+    //   MultiSelectDialogItem(2, 'USA'),
+    //   MultiSelectDialogItem(3, 'Canada'),
+    // ];
+
+    final selectedValues = await showDialog<Set<int>>(
+      context: context,
+      builder: (BuildContext context) {
+        return MultiSelectDialog(
+          items: items,
+          initialSelectedValues: [].toSet(),
+        );
+      },
+    );
+
+    print(selectedValues);
+    getvaluefromkey(selectedValues);
+  }
+
+  void getvaluefromkey(Set selection) {
+    if (selection != null) {
+      for (int x in selection.toList()) {
+        print(valuestopopulate[x]);
+      }
+    }
+  }
+
   final _firestore = FirebaseFirestore.instance;
+
   final _auth = FirebaseAuth.instance;
 
   String emailUser;
+
   String email;
 
   void getCurrentUserEmail() async {
@@ -33,7 +98,6 @@ class TelaAddPerfil extends StatelessWidget {
       birth_prof,
       rg_prof,
       mom_name_prof,
-      prox_prof,
       sex_prof,
       dise_prof,
       medicine_prof,
@@ -83,14 +147,13 @@ class TelaAddPerfil extends StatelessWidget {
         'birth_prof': birth_prof,
         'rg_prof': rg_prof,
         'mom_name_prof': mom_name_prof,
-        'prox_prof': prox_prof,
-        'sex_prof': sex_prof,
+        'sex_prof': _selectedSexo.sexo,
         'dise_prof': dise_prof,
         'medicine_prof': medicine_prof,
         'd_allergy_prof': d_allergy_prof,
-        'allergy_prof': allergy_prof,
-        'blood_prof': blood_prof,
-        'health_prof': health_prof,
+        'allergy_prof': _selectedAlergRem.alergRem,
+        'blood_prof': _selectedSang.tipoSang,
+        'health_prof': _selectedPlanSau.planSau,
         'n_health_prof': n_health_prof,
         'height_prof': height_prof,
         'weight_prof': weight_prof,
@@ -99,6 +162,7 @@ class TelaAddPerfil extends StatelessWidget {
     );
   }
 
+//Alerta de numero maximo de perfis excedido.
   showAlertDialog(BuildContext context) {
     // set up the button
     Widget okButton = TextButton(
@@ -129,7 +193,140 @@ class TelaAddPerfil extends StatelessWidget {
     );
   }
 
+  showDoencas() {}
+
+  //Lista Sexo
+  List<Sexo> _sexo = Sexo.getSexo();
+  List<DropdownMenuItem<Sexo>> _dropdownMenuItems;
+  Sexo _selectedSexo;
+
+  //Lista Sangue
+  List<TipoSang> _sangue = TipoSang.getTipoSang();
+  List<DropdownMenuItem<TipoSang>> _dropdownMenuSangue;
+  TipoSang _selectedSang;
+
+  //Lista Plano de Saúde
+  List<PlanSau> _saude = PlanSau.getPlanSau();
+  List<DropdownMenuItem<PlanSau>> _dropdownMenuPlanSau;
+  PlanSau _selectedPlanSau;
+
+  //Lista Alergia Remedios
+  List<AlergiaRemed> _alergRem = AlergiaRemed.getAlergiaRemed();
+  List<DropdownMenuItem<AlergiaRemed>> _dropdownMenuAlergRem;
+  AlergiaRemed _selectedAlergRem;
+
   @override
+  void initState() {
+    _dropdownMenuItems = buildDropdownMenuItems(_sexo);
+    _selectedSexo = _dropdownMenuItems[0].value;
+    _dropdownMenuSangue = buildDropdownMenuSangue(_sangue);
+    _selectedSang = _dropdownMenuSangue[0].value;
+    _dropdownMenuPlanSau = buildDropdownMenuPlanSau(_saude);
+    _selectedPlanSau = _dropdownMenuPlanSau[0].value;
+    _dropdownMenuAlergRem = buildDropdownMenuAlergRem(_alergRem);
+    _selectedAlergRem = _dropdownMenuAlergRem[0].value;
+    super.initState();
+  }
+
+  //Cria Lista com as opções de Sexo
+  List<DropdownMenuItem<Sexo>> buildDropdownMenuItems(List sexos) {
+    List<DropdownMenuItem<Sexo>> items = [];
+    for (Sexo sexo in sexos) {
+      items.add(
+        DropdownMenuItem(
+          value: sexo,
+          child: Text(sexo.sexo),
+        ),
+      );
+    }
+    return items;
+  }
+
+//Cria Lista com as opções de Sangue
+  List<DropdownMenuItem<TipoSang>> buildDropdownMenuSangue(List sangue) {
+    List<DropdownMenuItem<TipoSang>> items = [];
+    for (TipoSang sang in sangue) {
+      items.add(
+        DropdownMenuItem(
+          value: sang,
+          child: Text(sang.tipoSang),
+        ),
+      );
+    }
+    return items;
+  }
+
+  //Cria Lista com as opções de Plano de Saúde
+  List<DropdownMenuItem<PlanSau>> buildDropdownMenuPlanSau(List planSaude) {
+    List<DropdownMenuItem<PlanSau>> items = [];
+    for (PlanSau saude in planSaude) {
+      items.add(
+        DropdownMenuItem(
+          value: saude,
+          child: Text(saude.planSau),
+        ),
+      );
+    }
+    return items;
+  }
+
+  //Cria Lista com as opções de Alergia a remedios
+  List<DropdownMenuItem<AlergiaRemed>> buildDropdownMenuAlergRem(
+      List alergiaRem) {
+    List<DropdownMenuItem<AlergiaRemed>> items = [];
+    for (AlergiaRemed remedios in alergiaRem) {
+      items.add(
+        DropdownMenuItem(
+          value: remedios,
+          child: Text(remedios.alergRem),
+        ),
+      );
+    }
+    return items;
+  }
+
+  onChangeDropdownSexo(Sexo selectedSexo) {
+    setState(() {
+      _selectedSexo = selectedSexo;
+    });
+  }
+
+  onChangeDropdownSangue(TipoSang selectedSangue) {
+    setState(() {
+      _selectedSang = selectedSangue;
+    });
+  }
+
+  onChangeDropdownPlanSaude(PlanSau selectedSaude) {
+    setState(() {
+      _selectedPlanSau = selectedSaude;
+    });
+  }
+
+  onChangeDropdownAlergRem(AlergiaRemed selectedAlergRem) {
+    setState(() {
+      _selectedAlergRem = selectedAlergRem;
+    });
+  }
+
+  bool enableCampoMed() {
+    bool enable;
+    if (_selectedAlergRem.alergRem == "Sim") {
+      enable = true;
+    } else
+      enable = false;
+    return enable;
+  }
+
+  bool enableCampoCart() {
+    bool enable;
+    if (_selectedPlanSau.planSau == "Sim") {
+      enable = true;
+    } else
+      enable = false;
+    return enable;
+  }
+
   Widget build(BuildContext context) {
     Size size = MediaQuery.of(context).size;
     return Scaffold(
@@ -191,23 +388,29 @@ class TelaAddPerfil extends StatelessWidget {
                 ),
                 RoundedInputField(
                   hintText: "Nome",
+                  icon: Icons.person,
                   onChanged: (value) {
                     name_prof = value;
                   },
                 ),
                 RoundedInputField(
                   hintText: "Sobrenome",
+                  icon: Icons.person,
                   onChanged: (value) {
                     fam_name_prof = value;
                   },
                 ),
                 RoundedInputField(
+                  keyboardtype: TextInputType.datetime,
+                  icon: Icons.cake,
+                  maxlength: 10,
                   hintText: "Nascimento",
                   onChanged: (value) {
                     birth_prof = value;
                   },
                 ),
                 RoundedInputField(
+                  icon: Icons.badge,
                   hintText: "RG",
                   onChanged: (value) {
                     rg_prof = value;
@@ -219,35 +422,52 @@ class TelaAddPerfil extends StatelessWidget {
                     mom_name_prof = value;
                   },
                 ),
-                RoundedInputField(
-                  hintText: "Grau de Proximidade",
-                  onChanged: (value) {
-                    prox_prof = value;
-                  },
+
+                TextFieldContainer(
+                  child: Container(
+                    child: Row(children: [
+                      Padding(
+                        padding: const EdgeInsets.fromLTRB(2.0, 8.0, 14.0, 8.0),
+                        child: Image.asset(
+                          'images/icons/sex.png',
+                          color: kPrimaryColor,
+                        ),
+                      ),
+                      DropdownButton(
+                        value: _selectedSexo,
+                        items: _dropdownMenuItems,
+                        onChanged: onChangeDropdownSexo,
+                        underline: Container(
+                          height: 0,
+                        ),
+                        style: TextStyle(
+                            color: Colors.black54,
+                            fontFamily: 'Monda',
+                            fontSize: 16.0),
+                      ),
+                    ]),
+                  ),
                 ),
-                RoundedInputField(
-                  hintText: "Sexo",
-                  onChanged: (value) {
-                    sex_prof = value;
-                  },
-                ),
+
                 TextFieldContainer(
                   child: TextField(
                     keyboardType: TextInputType.number,
                     inputFormatters: <TextInputFormatter>[
                       FilteringTextInputFormatter.digitsOnly
                     ],
-                    style:
-                        TextStyle(color: Colors.black54, fontFamily: 'Monda'),
+                    style: TextStyle(
+                      color: Colors.black54,
+                      fontFamily: 'Monda',
+                    ),
                     onChanged: (value) {
                       height_prof = value;
                     },
                     cursorColor: kPrimaryColor,
                     decoration: InputDecoration(
-                      // icon: Icon(
-                      //   icon,
-                      //   color: kPrimaryColor,
-                      // ),
+                      icon: Icon(
+                        Icons.height,
+                        color: kPrimaryColor,
+                      ),
                       hintText: 'Altura',
                       border: InputBorder.none,
                     ),
@@ -275,11 +495,37 @@ class TelaAddPerfil extends StatelessWidget {
                     ),
                   ),
                 ),
-                RoundedInputField(
-                  hintText: "Doenças Preexistentes",
-                  onChanged: (value) {
-                    dise_prof = value;
-                  },
+                TextFieldContainer(
+                  child: Container(
+                    child: Row(children: [
+                      Padding(
+                        padding: const EdgeInsets.fromLTRB(2.0, 8.0, 14.0, 8.0),
+                        child: Image.asset(
+                          'images/icons/virus.png',
+                          color: kPrimaryColor,
+                        ),
+                      ),
+                      TextButton(
+                          style: ButtonStyle(
+                            padding:
+                                MaterialStateProperty.all<EdgeInsetsGeometry>(
+                              EdgeInsets.symmetric(
+                                vertical: 10,
+                              ),
+                            ),
+                            backgroundColor: MaterialStateProperty.all<Color>(
+                              Color(0xFFC7F0E9),
+                            ),
+                          ),
+                          onPressed: () => showMultiSelect(context),
+                          child: Text("Possui Doenças Preexistentes?",
+                              style: TextStyle(
+                                fontSize: 16.0,
+                                color: Colors.black54,
+                                fontFamily: 'Monda',
+                              ))),
+                    ]),
+                  ),
                 ),
                 RoundedInputField(
                   hintText: "Remédios de uso Contínuo",
@@ -287,36 +533,101 @@ class TelaAddPerfil extends StatelessWidget {
                     medicine_prof = value;
                   },
                 ),
-                RoundedInputField(
-                  hintText: "Possui Alergia a algum medicamento?",
-                  onChanged: (value) {
-                    allergy_prof = value;
-                  },
+//Possui Alergia a algum medicamento?;
+                TextFieldContainer(
+                  child: Container(
+                    child: Row(children: [
+                      Padding(
+                        padding: const EdgeInsets.fromLTRB(2.0, 8.0, 14.0, 8.0),
+                        child: Image.asset(
+                          'images/icons/medication.png',
+                          color: kPrimaryColor,
+                        ),
+                      ),
+                      DropdownButton(
+                        value: _selectedAlergRem,
+                        items: _dropdownMenuAlergRem,
+                        onChanged: onChangeDropdownAlergRem,
+                        underline: Container(
+                          height: 0,
+                        ),
+                        style: TextStyle(
+                            color: Colors.black54,
+                            fontFamily: 'Monda',
+                            fontSize: 16.0),
+                      ),
+                    ]),
+                  ),
                 ),
+//Nome do medicamento que é alérgico.
                 RoundedInputField(
                   hintText: "Qual medicamento?",
+                  enable: enableCampoMed(),
                   onChanged: (value) {
                     d_allergy_prof = value;
                   },
                 ),
-                RoundedInputField(
-                  hintText: "Tipo Sanguíneo",
-                  onChanged: (value) {
-                    blood_prof = value;
-                  },
+//Tipo Sanguíneo
+                TextFieldContainer(
+                  child: Container(
+                    child: Row(children: [
+                      Padding(
+                        padding: const EdgeInsets.fromLTRB(2.0, 8.0, 14.0, 8.0),
+                        child: Image.asset(
+                          'images/icons/bloodtype.png',
+                          color: kPrimaryColor,
+                        ),
+                      ),
+                      DropdownButton(
+                        value: _selectedSang,
+                        items: _dropdownMenuSangue,
+                        onChanged: onChangeDropdownSangue,
+                        underline: Container(
+                          height: 0,
+                        ),
+                        style: TextStyle(
+                            color: Colors.black54,
+                            fontFamily: 'Monda',
+                            fontSize: 16.0),
+                      ),
+                    ]),
+                  ),
                 ),
-                RoundedInputField(
-                  hintText: "Possui Plano de Saúde?",
-                  onChanged: (value) {
-                    health_prof = value;
-                  },
+//Plano de Saude
+                TextFieldContainer(
+                  child: Container(
+                    child: Row(children: [
+                      Padding(
+                        padding: const EdgeInsets.fromLTRB(2.0, 8.0, 14.0, 8.0),
+                        child: Image.asset(
+                          'images/icons/health.png',
+                          color: kPrimaryColor,
+                        ),
+                      ),
+                      DropdownButton(
+                        value: _selectedPlanSau,
+                        items: _dropdownMenuPlanSau,
+                        onChanged: onChangeDropdownPlanSaude,
+                        underline: Container(
+                          height: 0,
+                        ),
+                        style: TextStyle(
+                            color: Colors.black54,
+                            fontFamily: 'Monda',
+                            fontSize: 16.0),
+                      ),
+                    ]),
+                  ),
                 ),
+//Carteirinha do Plano
                 RoundedInputField(
                   hintText: "Número da Carteirinha",
+                  enable: enableCampoCart(),
                   onChanged: (value) {
                     n_health_prof = value;
                   },
                 ),
+//Botão para criar perfil
                 RoundedButton(
                   text: "Criar",
                   press: () async {
@@ -375,45 +686,11 @@ class TelaAddPerfil extends StatelessWidget {
                     }
                   },
                 ),
-                RoundedButton(
-                  text: "TESTE",
-                  press: () async {
-                    dynamic qtd = await documentId();
-                    if (qtd == '0') {
-                      print(qtd);
-                    } else if (qtd == '1') {
-                      print(qtd);
-                    } else if (qtd == '2') {
-                      print(qtd);
-                    } else if (qtd == '3') {
-                      print(qtd);
-                    } else if (qtd == '4') {
-                      print(qtd);
-                    } else {
-                      showAlertDialog(context);
-                    }
-                  },
-                ),
               ],
             ),
           ),
         ],
       ),
-
-      // Column(
-      //   children: [
-      //     Container(
-      //       width: double.infinity,
-      //       // Here i can use size.width but use double.infinity because both work as a same
-      //       child: Stack(
-      //         alignment: Alignment.center,
-      //         children: <Widget>[
-      //           child,
-      //         ],
-      //       ),
-      //     ),
-      //   ],
-      // ),
     );
   }
 }
@@ -428,11 +705,90 @@ class ReusableCard extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       child: Icon(Icons.add_a_photo, color: Color(0xffC7F0E9), size: 44.0),
-      // margin: EdgeInsets.all(15.0),
-      // decoration: BoxDecoration(
-      //   borderRadius: BorderRadius.circular(5.0),
-      //   color: cor,
-      // ),
+    );
+  }
+}
+
+class MultiSelectDialogItem<V> {
+  const MultiSelectDialogItem(this.value, this.label);
+
+  final V value;
+  final String label;
+}
+
+class MultiSelectDialog<V> extends StatefulWidget {
+  MultiSelectDialog({Key key, this.items, this.initialSelectedValues})
+      : super(key: key);
+
+  final List<MultiSelectDialogItem<V>> items;
+  final Set<V> initialSelectedValues;
+
+  @override
+  State<StatefulWidget> createState() => _MultiSelectDialogState<V>();
+}
+
+class _MultiSelectDialogState<V> extends State<MultiSelectDialog<V>> {
+  final _selectedValues = Set<V>();
+
+  void initState() {
+    super.initState();
+    if (widget.initialSelectedValues != null) {
+      _selectedValues.addAll(widget.initialSelectedValues);
+    }
+  }
+
+  void _onItemCheckedChange(V itemValue, bool checked) {
+    setState(() {
+      if (checked) {
+        _selectedValues.add(itemValue);
+      } else {
+        _selectedValues.remove(itemValue);
+      }
+    });
+  }
+
+  void _onCancelTap() {
+    Navigator.pop(context);
+  }
+
+  void _onSubmitTap() {
+    Navigator.pop(context, _selectedValues);
+    print(_selectedValues);
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return AlertDialog(
+      title: Text('Selecione as Doenças'),
+      contentPadding: EdgeInsets.only(top: 12.0),
+      content: SingleChildScrollView(
+        child: ListTileTheme(
+          contentPadding: EdgeInsets.fromLTRB(14.0, 0.0, 24.0, 0.0),
+          child: ListBody(
+            children: widget.items.map(_buildItem).toList(),
+          ),
+        ),
+      ),
+      actions: <Widget>[
+        FlatButton(
+          child: Text('CANCEL'),
+          onPressed: _onCancelTap,
+        ),
+        FlatButton(
+          child: Text('OK'),
+          onPressed: _onSubmitTap,
+        )
+      ],
+    );
+  }
+
+  Widget _buildItem(MultiSelectDialogItem<V> item) {
+    final checked = _selectedValues.contains(item.value);
+    return CheckboxListTile(
+      value: checked,
+      title: Text(item.label),
+      controlAffinity: ListTileControlAffinity.leading,
+      onChanged: (checked) => _onItemCheckedChange(item.value, checked),
     );
   }
 }

@@ -9,6 +9,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'perfil_screen.dart';
 import 'tela_login.dart';
+import 'package:http/http.dart';
 
 class Consulta extends StatelessWidget {
   final Widget child;
@@ -375,5 +376,14 @@ class ConsultaField extends StatelessWidget {
         ),
       ],
     );
+  }
+
+  String fetch() {
+    try {
+      var url = 'localhost:8888/example';
+    } catch (error) {
+      print(error);
+      return error.toString();
+    }
   }
 }
