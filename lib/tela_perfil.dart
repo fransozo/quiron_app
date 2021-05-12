@@ -110,7 +110,7 @@ class TelaPerfil extends StatelessWidget {
                       final dadoMedici = dado.get('medicine_prof');
                       final dadoMom = dado.get('mom_name_prof');
                       final dadoNHealth = dado.get('n_health_prof');
-                      final dadoProx = dado.get('prox_prof');
+
                       final dadoRG = dado.get('rg_prof');
                       final dadoSex = dado.get('sex_prof');
                       final dadoWeight = dado.get('weight_prof');
@@ -128,7 +128,6 @@ class TelaPerfil extends StatelessWidget {
                         textMedici: dadoMedici,
                         textMom: dadoMom,
                         textNHealth: dadoNHealth,
-                        textProx: dadoProx,
                         textRG: dadoRG,
                         textSex: dadoSex,
                         textWeight: dadoWeight,
@@ -246,10 +245,6 @@ class InputField extends StatelessWidget {
         ),
         RoundedInputField(
           hintText: textMom,
-          onChanged: (value) {},
-        ),
-        RoundedInputField(
-          hintText: textProx,
           onChanged: (value) {},
         ),
         RoundedInputField(

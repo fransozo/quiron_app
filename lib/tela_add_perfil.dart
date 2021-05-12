@@ -7,77 +7,103 @@ import 'package:flutter/services.dart';
 import 'perfil_screen.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'perfil_screen.dart';
-import 'tela_login.dart';
 import 'drop_down_list.dart';
-import 'doencas_lista.dart';
+import 'package:multi_select_flutter/multi_select_flutter.dart';
 
 class TelaAddPerfil extends StatefulWidget {
   final Widget child;
-  TelaAddPerfil({
-    Key key,
-    this.child,
-  }) : super(key: key);
+  final String doencaspreex;
+
+  TelaAddPerfil({Key key, this.child, this.doencaspreex}) : super(key: key);
 
   @override
   _TelaAddPerfilState createState() => _TelaAddPerfilState();
 }
 
+class Animal {
+  final int id;
+  final String name;
+
+  Animal({
+    this.id,
+    this.name,
+  });
+
+  String toString() {
+    return '$name';
+  }
+}
+
+class Remedio {
+  final int id;
+  final String name;
+
+  Remedio({
+    this.id,
+    this.name,
+  });
+
+  String toString() {
+    return '$name';
+  }
+}
+
 class _TelaAddPerfilState extends State<TelaAddPerfil> {
-  String value = "";
+  static List<Animal> _animals = [
+    Animal(id: 1, name: "Hipertensão"),
+    Animal(id: 2, name: "Diabetes"),
+    Animal(id: 3, name: "Asma"),
+    Animal(id: 4, name: "Câncer"),
+    Animal(id: 5, name: "Artrite"),
+    Animal(id: 6, name: "Insuficiência Renal"),
+    Animal(id: 7, name: "Obesidade"),
+    Animal(id: 8, name: "Depressão"),
+    Animal(id: 9, name: "AVC"),
+    Animal(id: 10, name: "Colesterol Alto"),
+  ];
 
-  List<MultiSelectDialogItem<int>> multiItem = List();
+  static List<Remedio> _remedio = [
+    Remedio(id: 1, name: "Losartana"),
+    Remedio(id: 2, name: "Glifage"),
+    Remedio(id: 3, name: "Hidroclorotiazida"),
+    Remedio(id: 4, name: "Rivotril"),
+    Remedio(id: 5, name: "Metformina"),
+    Remedio(id: 6, name: "Symbicort"),
+    Remedio(id: 7, name: "Loratadina"),
+    Remedio(id: 8, name: "Diazepam"),
+    Remedio(id: 9, name: "Sinvastatina"),
+    Remedio(id: 10, name: "Fenofibrato"),
+  ];
 
-  final valuestopopulate = {
-    1: "Hipertensão",
-    2: "Diabetes",
-    3: "Asma",
-    4: "Câncer",
-    5: "Artrite",
-    6: "Insuficiência Renal",
-    7: "Obesidade",
-    8: "Depressão",
-    9: "AVC",
-    10: "Colesterol Alto",
-  };
+  final _items = _animals
+      .map((animal) => MultiSelectItem<Animal>(animal, animal.name))
+      .toList();
+  List<Animal> _selectedAnimals = [];
+  //List<Animal> _selectedAnimals2 = [];
+  //List<Animal> _selectedAnimals3 = [];
+  //List<Animal> _selectedAnimals4 = [];
+  //List<Animal> _selectedAnimals5 = [];
+  //final _multiSelectKey = GlobalKey<FormFieldState>();
 
-  void populateMultiselect() {
-    for (int v in valuestopopulate.keys) {
-      multiItem.add(MultiSelectDialogItem(v, valuestopopulate[v]));
-    }
-  }
+  //void initState() {
+  //  _selectedAnimals5 = _animals;
+  //  super.initState();
+  //}
 
-  void showMultiSelect(BuildContext context) async {
-    multiItem = [];
-    populateMultiselect();
-    final items = multiItem;
-    // final items = <MultiSelectDialogItem<int>>[
-    //   MultiSelectDialogItem(1, 'India'),
-    //   MultiSelectDialogItem(2, 'USA'),
-    //   MultiSelectDialogItem(3, 'Canada'),
-    // ];
+  final _itemsRemedios = _remedio
+      .map((remedio) => MultiSelectItem<Remedio>(remedio, remedio.name))
+      .toList();
+  List<Animal> _selectedRemedios = [];
+  //List<Animal> _selectedAnimals2 = [];
+  //List<Animal> _selectedAnimals3 = [];
+  //List<Animal> _selectedAnimals4 = [];
+  //List<Animal> _selectedAnimals5 = [];
+  //final _multiSelectKey = GlobalKey<FormFieldState>();
 
-    final selectedValues = await showDialog<Set<int>>(
-      context: context,
-      builder: (BuildContext context) {
-        return MultiSelectDialog(
-          items: items,
-          initialSelectedValues: [].toSet(),
-        );
-      },
-    );
-
-    print(selectedValues);
-    getvaluefromkey(selectedValues);
-  }
-
-  void getvaluefromkey(Set selection) {
-    if (selection != null) {
-      for (int x in selection.toList()) {
-        print(valuestopopulate[x]);
-      }
-    }
-  }
+  //void initState() {
+  //  _selectedAnimals5 = _animals;
+  //  super.initState();
+  //}
 
   final _firestore = FirebaseFirestore.instance;
 
@@ -110,6 +136,8 @@ class _TelaAddPerfilState extends State<TelaAddPerfil> {
       height_prof,
       qtdPerfis,
       idDoc,
+      doencaspreex,
+      remCont,
       weight_prof;
 
   Future<String> documentId() async {
@@ -148,8 +176,8 @@ class _TelaAddPerfilState extends State<TelaAddPerfil> {
         'rg_prof': rg_prof,
         'mom_name_prof': mom_name_prof,
         'sex_prof': _selectedSexo.sexo,
-        'dise_prof': dise_prof,
-        'medicine_prof': medicine_prof,
+        'dise_prof': doencaspreex,
+        'medicine_prof': remCont,
         'd_allergy_prof': d_allergy_prof,
         'allergy_prof': _selectedAlergRem.alergRem,
         'blood_prof': _selectedSang.tipoSang,
@@ -192,8 +220,6 @@ class _TelaAddPerfilState extends State<TelaAddPerfil> {
       },
     );
   }
-
-  showDoencas() {}
 
   //Lista Sexo
   List<Sexo> _sexo = Sexo.getSexo();
@@ -307,6 +333,10 @@ class _TelaAddPerfilState extends State<TelaAddPerfil> {
     setState(() {
       _selectedAlergRem = selectedAlergRem;
     });
+  }
+
+  onSelectDoenca() {
+    setState(() {});
   }
 
   bool enableCampoMed() {
@@ -448,7 +478,6 @@ class _TelaAddPerfilState extends State<TelaAddPerfil> {
                     ]),
                   ),
                 ),
-
                 TextFieldContainer(
                   child: TextField(
                     keyboardType: TextInputType.number,
@@ -495,43 +524,95 @@ class _TelaAddPerfilState extends State<TelaAddPerfil> {
                     ),
                   ),
                 ),
-                TextFieldContainer(
-                  child: Container(
-                    child: Row(children: [
-                      Padding(
-                        padding: const EdgeInsets.fromLTRB(2.0, 8.0, 14.0, 8.0),
-                        child: Image.asset(
-                          'images/icons/virus.png',
-                          color: kPrimaryColor,
-                        ),
-                      ),
-                      TextButton(
-                          style: ButtonStyle(
-                            padding:
-                                MaterialStateProperty.all<EdgeInsetsGeometry>(
-                              EdgeInsets.symmetric(
-                                vertical: 10,
-                              ),
-                            ),
-                            backgroundColor: MaterialStateProperty.all<Color>(
-                              Color(0xFFC7F0E9),
-                            ),
-                          ),
-                          onPressed: () => showMultiSelect(context),
-                          child: Text("Possui Doenças Preexistentes?",
-                              style: TextStyle(
-                                fontSize: 16.0,
-                                color: Colors.black54,
-                                fontFamily: 'Monda',
-                              ))),
-                    ]),
+//Doencas de Uso Continuo
+                Container(
+                  margin: EdgeInsets.symmetric(vertical: 10),
+                  padding: EdgeInsets.symmetric(horizontal: 20, vertical: 5),
+                  width: size.width * 0.8,
+                  decoration: BoxDecoration(
+                    color: kPrimaryLightColor,
+                    borderRadius: BorderRadius.circular(29),
                   ),
+                  child: Wrap(children: [
+                    Padding(
+                      padding: const EdgeInsets.fromLTRB(2.0, 8.0, 14.0, 8.0),
+                      child: Image.asset(
+                        'images/icons/virus.png',
+                        color: kPrimaryColor,
+                      ),
+                    ),
+                    SizedBox(
+                      width: 260.0,
+                      child: MultiSelectDialogField(
+                        chipDisplay: MultiSelectChipDisplay(
+                          chipColor: Color(0xFF15EBC4),
+                          textStyle: TextStyle(
+                              color: Colors.black54, fontFamily: 'Monda'),
+                          scroll: true,
+                        ),
+                        items: _items,
+                        title: Text("Selecione as Doenças"),
+                        selectedColor: Color(0xFF15EBC4),
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.all(Radius.circular(40)),
+                        ),
+                        buttonText: Text(
+                          "Possui Alguma Doença Preexistente?",
+                          style: TextStyle(
+                              color: Colors.black54, fontFamily: 'Monda'),
+                        ),
+                        onConfirm: (results) {
+                          doencaspreex = results.toString();
+                          print(results.toString());
+                        },
+                      ),
+                    ),
+                  ]),
                 ),
-                RoundedInputField(
-                  hintText: "Remédios de uso Contínuo",
-                  onChanged: (value) {
-                    medicine_prof = value;
-                  },
+//Remedios de Uso Contínuo
+                Container(
+                  margin: EdgeInsets.symmetric(vertical: 10),
+                  padding: EdgeInsets.symmetric(horizontal: 20, vertical: 5),
+                  width: size.width * 0.8,
+                  decoration: BoxDecoration(
+                    color: kPrimaryLightColor,
+                    borderRadius: BorderRadius.circular(29),
+                  ),
+                  child: Wrap(children: [
+                    Padding(
+                      padding: const EdgeInsets.fromLTRB(2.0, 8.0, 14.0, 8.0),
+                      child: Image.asset(
+                        'images/icons/medication.png',
+                        color: kPrimaryColor,
+                      ),
+                    ),
+                    SizedBox(
+                      width: 260.0,
+                      child: MultiSelectDialogField(
+                        chipDisplay: MultiSelectChipDisplay(
+                          chipColor: Color(0xFF15EBC4),
+                          textStyle: TextStyle(
+                              color: Colors.black54, fontFamily: 'Monda'),
+                          scroll: true,
+                        ),
+                        items: _itemsRemedios,
+                        title: Text("Selecione os Remédios"),
+                        selectedColor: Color(0xFF15EBC4),
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.all(Radius.circular(40)),
+                        ),
+                        buttonText: Text(
+                          "Remédios de Uso Contínuo",
+                          style: TextStyle(
+                              color: Colors.black54, fontFamily: 'Monda'),
+                        ),
+                        onConfirm: (results) {
+                          remCont = results.toString();
+                          print(results.toString());
+                        },
+                      ),
+                    ),
+                  ]),
                 ),
 //Possui Alergia a algum medicamento?;
                 TextFieldContainer(
@@ -686,6 +767,15 @@ class _TelaAddPerfilState extends State<TelaAddPerfil> {
                     }
                   },
                 ),
+                RoundedButton(
+                  text: "Teste",
+                  press: () {
+                    //Navigator.push(context,
+                    //  MaterialPageRoute(builder: (context) {
+                    //return MyApp();
+                    //}));
+                  },
+                ),
               ],
             ),
           ),
@@ -705,90 +795,6 @@ class ReusableCard extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       child: Icon(Icons.add_a_photo, color: Color(0xffC7F0E9), size: 44.0),
-    );
-  }
-}
-
-class MultiSelectDialogItem<V> {
-  const MultiSelectDialogItem(this.value, this.label);
-
-  final V value;
-  final String label;
-}
-
-class MultiSelectDialog<V> extends StatefulWidget {
-  MultiSelectDialog({Key key, this.items, this.initialSelectedValues})
-      : super(key: key);
-
-  final List<MultiSelectDialogItem<V>> items;
-  final Set<V> initialSelectedValues;
-
-  @override
-  State<StatefulWidget> createState() => _MultiSelectDialogState<V>();
-}
-
-class _MultiSelectDialogState<V> extends State<MultiSelectDialog<V>> {
-  final _selectedValues = Set<V>();
-
-  void initState() {
-    super.initState();
-    if (widget.initialSelectedValues != null) {
-      _selectedValues.addAll(widget.initialSelectedValues);
-    }
-  }
-
-  void _onItemCheckedChange(V itemValue, bool checked) {
-    setState(() {
-      if (checked) {
-        _selectedValues.add(itemValue);
-      } else {
-        _selectedValues.remove(itemValue);
-      }
-    });
-  }
-
-  void _onCancelTap() {
-    Navigator.pop(context);
-  }
-
-  void _onSubmitTap() {
-    Navigator.pop(context, _selectedValues);
-    print(_selectedValues);
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return AlertDialog(
-      title: Text('Selecione as Doenças'),
-      contentPadding: EdgeInsets.only(top: 12.0),
-      content: SingleChildScrollView(
-        child: ListTileTheme(
-          contentPadding: EdgeInsets.fromLTRB(14.0, 0.0, 24.0, 0.0),
-          child: ListBody(
-            children: widget.items.map(_buildItem).toList(),
-          ),
-        ),
-      ),
-      actions: <Widget>[
-        FlatButton(
-          child: Text('CANCEL'),
-          onPressed: _onCancelTap,
-        ),
-        FlatButton(
-          child: Text('OK'),
-          onPressed: _onSubmitTap,
-        )
-      ],
-    );
-  }
-
-  Widget _buildItem(MultiSelectDialogItem<V> item) {
-    final checked = _selectedValues.contains(item.value);
-    return CheckboxListTile(
-      value: checked,
-      title: Text(item.label),
-      controlAffinity: ListTileControlAffinity.leading,
-      onChanged: (checked) => _onItemCheckedChange(item.value, checked),
     );
   }
 }
