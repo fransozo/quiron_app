@@ -121,7 +121,7 @@ class _TelaAddPerfilState extends State<TelaAddPerfil> {
   InputBorder nascNull = InputBorder.none;
   InputBorder rgNull = InputBorder.none;
   InputBorder momNull = InputBorder.none;
-  InputBorder sexoNull = InputBorder.none;
+  Color sexoNull;
   InputBorder doecasNull = InputBorder.none;
   InputBorder remContNull = InputBorder.none;
   InputBorder alergRemNull = InputBorder.none;
@@ -247,6 +247,34 @@ class _TelaAddPerfilState extends State<TelaAddPerfil> {
       title: Text("Alerta"),
       content: Text(
           "Número máximo de perfis atingido. Caso seja necessário exclua um perfil."),
+      actions: [
+        okButton,
+      ],
+    );
+
+    // show the dialog
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return alert;
+      },
+    );
+  }
+
+  //Alerta de Formulário Null.
+  showAlertForm(BuildContext context) {
+    // set up the button
+    Widget okButton = TextButton(
+      child: Text("OK"),
+      onPressed: () {
+        Navigator.pop(context);
+      },
+    );
+
+    // set up the AlertDialog
+    AlertDialog alert = AlertDialog(
+      title: Text("Campos Obrigatórios"),
+      content: Text("Favor preencher os campos destacados em vermelho"),
       actions: [
         okButton,
       ],
@@ -555,7 +583,8 @@ class _TelaAddPerfilState extends State<TelaAddPerfil> {
                         items: _dropdownMenuItems,
                         onChanged: onChangeDropdownSexo,
                         underline: Container(
-                          height: 0,
+                          color: sexoNull,
+                          height: 2,
                         ),
                         style: TextStyle(
                             color: Colors.black54,
@@ -791,26 +820,38 @@ class _TelaAddPerfilState extends State<TelaAddPerfil> {
 
                     print("Print botão criar $idDoc");
                     print("Print enviou NULL $name_prof");
+                    print(_selectedSexo.sexo);
 
                     if (name_prof == null) {
-                      nameNull = OutlineInputBorder(
-                          borderSide:
-                              const BorderSide(color: Colors.red, width: 0.0));
+                      setState(() {
+                        nameNull = OutlineInputBorder(
+                            borderRadius:
+                                BorderRadius.all(Radius.circular(29.0)),
+                            borderSide: BorderSide(color: Colors.red));
+                      });
                     }
                     if (fam_name_prof == null) {
-                      famNull = OutlineInputBorder();
+                      famNull = OutlineInputBorder(
+                          borderRadius: BorderRadius.all(Radius.circular(29.0)),
+                          borderSide: BorderSide(color: Colors.red));
                     }
                     if (birth_prof == null) {
-                      nascNull = OutlineInputBorder();
+                      nascNull = OutlineInputBorder(
+                          borderRadius: BorderRadius.all(Radius.circular(29.0)),
+                          borderSide: BorderSide(color: Colors.red));
                     }
                     if (rg_prof == null) {
-                      rgNull = OutlineInputBorder();
+                      rgNull = OutlineInputBorder(
+                          borderRadius: BorderRadius.all(Radius.circular(29.0)),
+                          borderSide: BorderSide(color: Colors.red));
                     }
                     if (mom_name_prof == null) {
-                      momNull = OutlineInputBorder();
+                      momNull = OutlineInputBorder(
+                          borderRadius: BorderRadius.all(Radius.circular(29.0)),
+                          borderSide: BorderSide(color: Colors.red));
                     }
-                    if (_selectedSexo.sexo == null) {
-                      sexoNull = OutlineInputBorder();
+                    if (_selectedSexo.sexo == "Sexo") {
+                      sexoNull = Colors.red;
                     }
                     if (doencaspreex == null) {
                       doecasNull = OutlineInputBorder();
@@ -822,13 +863,30 @@ class _TelaAddPerfilState extends State<TelaAddPerfil> {
                       alergRemNull = OutlineInputBorder();
                     }
                     if (_selectedAlergRem.alergRem == null) {
-                      nameNull = OutlineInputBorder();
+                      alergRemNull = OutlineInputBorder();
                     }
                     if (_selectedPlanSau.planSau == null) {
                       planSauNull = OutlineInputBorder();
                     }
                     if (n_health_prof == null) {
                       numPlanSau = OutlineInputBorder();
+                    }
+                    if (name_prof == null ||
+                        fam_name_prof == null ||
+                        birth_prof == null ||
+                        rg_prof == null ||
+                        mom_name_prof == null ||
+                        _selectedSexo.sexo == null ||
+                        doencaspreex == null ||
+                        remCont == null ||
+                        d_allergy_prof == null ||
+                        _selectedAlergRem.alergRem == null ||
+                        _selectedSang.tipoSang == null ||
+                        _selectedPlanSau.planSau == null ||
+                        n_health_prof == null ||
+                        height_prof == null ||
+                        weight_prof == null) {
+                      return showAlertForm(context);
                     }
 
                     if (qtd == '0') {
