@@ -64,18 +64,18 @@ class AlergRemed {
 }
 
 class _TelaAddPerfilState extends State<TelaAddPerfil> {
-  static List<Doenca> _doencas = [
-    Doenca(id: 1, name: "Hipertensão"),
-    Doenca(id: 2, name: "Diabetes"),
-    Doenca(id: 3, name: "Asma"),
-    Doenca(id: 4, name: "Câncer"),
-    Doenca(id: 5, name: "Artrite"),
-    Doenca(id: 6, name: "Insuficiência Renal"),
-    Doenca(id: 7, name: "Obesidade"),
-    Doenca(id: 8, name: "Depressão"),
-    Doenca(id: 9, name: "AVC"),
-    Doenca(id: 10, name: "Colesterol Alto"),
-  ];
+  // static List<Doenca> _doencas = [
+  //   Doenca(id: 1, name: "Hipertensão"),
+  //   Doenca(id: 2, name: "Diabetes"),
+  //   Doenca(id: 3, name: "Asma"),
+  //   Doenca(id: 4, name: "Câncer"),
+  //   Doenca(id: 5, name: "Artrite"),
+  //   Doenca(id: 6, name: "Insuficiência Renal"),
+  //   Doenca(id: 7, name: "Obesidade"),
+  //   Doenca(id: 8, name: "Depressão"),
+  //   Doenca(id: 9, name: "AVC"),
+  //   Doenca(id: 10, name: "Colesterol Alto"),
+  // ];
 
   static List<Remedio> _remedio = [
     Remedio(id: 1, name: "Losartana"),
@@ -103,10 +103,6 @@ class _TelaAddPerfilState extends State<TelaAddPerfil> {
     AlergRemed(id: 10, name: "Fenofibrato"),
   ];
 
-  final _items = _doencas
-      .map((doenca) => MultiSelectItem<Doenca>(doenca, doenca.name))
-      .toList();
-
   final _itemsRemedios = _remedio
       .map((remedio) => MultiSelectItem<Remedio>(remedio, remedio.name))
       .toList();
@@ -120,6 +116,18 @@ class _TelaAddPerfilState extends State<TelaAddPerfil> {
   final _auth = FirebaseAuth.instance;
   String emailUser;
   String email;
+  InputBorder nameNull = InputBorder.none;
+  InputBorder famNull = InputBorder.none;
+  InputBorder nascNull = InputBorder.none;
+  InputBorder rgNull = InputBorder.none;
+  InputBorder momNull = InputBorder.none;
+  InputBorder sexoNull = InputBorder.none;
+  InputBorder doecasNull = InputBorder.none;
+  InputBorder remContNull = InputBorder.none;
+  InputBorder alergRemNull = InputBorder.none;
+  InputBorder planSauNull = InputBorder.none;
+  InputBorder numPlanSau = InputBorder.none;
+
   final TextEditingController _controller = TextEditingController();
   final TextEditingController _controller1 = TextEditingController();
   final TextEditingController _controller2 = TextEditingController();
@@ -268,6 +276,11 @@ class _TelaAddPerfilState extends State<TelaAddPerfil> {
   List<DropdownMenuItem<PlanSau>> _dropdownMenuPlanSau;
   PlanSau _selectedPlanSau;
 
+  //Lista Doenças Preexistes
+  List<DoencaPreex> _doencas = DoencaPreex.getDoencaPreex();
+  List<DropdownMenuItem<DoencaPreex>> _dropdownMenuDoencasPreex;
+  DoencaPreex _selectedDoencasPreex;
+
   //Lista Alergia Remedios
   List<AlergiaRemed> _alergRem = AlergiaRemed.getAlergiaRemed();
   List<DropdownMenuItem<AlergiaRemed>> _dropdownMenuAlergRem;
@@ -283,6 +296,8 @@ class _TelaAddPerfilState extends State<TelaAddPerfil> {
     _selectedPlanSau = _dropdownMenuPlanSau[0].value;
     _dropdownMenuAlergRem = buildDropdownMenuAlergRem(_alergRem);
     _selectedAlergRem = _dropdownMenuAlergRem[0].value;
+    _dropdownMenuDoencasPreex = buildDropdownMenuDoencaPreex(_doencas);
+    _selectedDoencasPreex = _dropdownMenuDoencasPreex[0].value;
     super.initState();
   }
 
@@ -328,6 +343,21 @@ class _TelaAddPerfilState extends State<TelaAddPerfil> {
     return items;
   }
 
+  //Cria Lista com as opções de Doencas Preexistentes
+  List<DropdownMenuItem<DoencaPreex>> buildDropdownMenuDoencaPreex(
+      List doencapre) {
+    List<DropdownMenuItem<DoencaPreex>> items = [];
+    for (DoencaPreex doencas in doencapre) {
+      items.add(
+        DropdownMenuItem(
+          value: doencas,
+          child: Text(doencas.doencapreex),
+        ),
+      );
+    }
+    return items;
+  }
+
   //Cria Lista com as opções de Alergia a remedios
   List<DropdownMenuItem<AlergiaRemed>> buildDropdownMenuAlergRem(
       List alergiaRem) {
@@ -346,6 +376,12 @@ class _TelaAddPerfilState extends State<TelaAddPerfil> {
   onChangeDropdownSexo(Sexo selectedSexo) {
     setState(() {
       _selectedSexo = selectedSexo;
+    });
+  }
+
+  onChangeDropdownDoenca(DoencaPreex selectedDoencas) {
+    setState(() {
+      _selectedDoencasPreex = selectedDoencas;
     });
   }
 
@@ -369,6 +405,15 @@ class _TelaAddPerfilState extends State<TelaAddPerfil> {
 
   onSelectDoenca() {
     setState(() {});
+  }
+
+  bool enableCampoDoencas() {
+    bool enable;
+    if (_selectedAlergRem.alergRem == "Sim") {
+      enable = true;
+    } else
+      enable = false;
+    return enable;
   }
 
   bool enableCampoMed() {
@@ -449,6 +494,7 @@ class _TelaAddPerfilState extends State<TelaAddPerfil> {
                   ],
                 ),
                 RoundedInputField(
+                  border: nameNull,
                   controller: _controller,
                   hintText: "Nome",
                   icon: Icons.person,
@@ -457,6 +503,7 @@ class _TelaAddPerfilState extends State<TelaAddPerfil> {
                   },
                 ),
                 RoundedInputField(
+                  border: famNull,
                   controller: _controller1,
                   hintText: "Sobrenome",
                   icon: Icons.person,
@@ -465,6 +512,7 @@ class _TelaAddPerfilState extends State<TelaAddPerfil> {
                   },
                 ),
                 RoundedInputField(
+                  border: nascNull,
                   controller: _controller2,
                   keyboardtype: TextInputType.datetime,
                   icon: Icons.cake,
@@ -475,6 +523,7 @@ class _TelaAddPerfilState extends State<TelaAddPerfil> {
                   },
                 ),
                 RoundedInputField(
+                  border: rgNull,
                   controller: _controller3,
                   icon: Icons.badge,
                   hintText: "RG",
@@ -483,6 +532,7 @@ class _TelaAddPerfilState extends State<TelaAddPerfil> {
                   },
                 ),
                 RoundedInputField(
+                  border: momNull,
                   controller: _controller4,
                   hintText: "Nome da Mãe",
                   onChanged: (value) {
@@ -563,51 +613,33 @@ class _TelaAddPerfilState extends State<TelaAddPerfil> {
                     ),
                   ),
                 ),
-//Doencas Preexistentes
-                Container(
-                  margin: EdgeInsets.symmetric(vertical: 10),
-                  padding: EdgeInsets.symmetric(horizontal: 20, vertical: 5),
-                  width: size.width * 0.8,
-                  decoration: BoxDecoration(
-                    color: kPrimaryLightColor,
-                    borderRadius: BorderRadius.circular(29),
+//Doencas Preexistentes (Sim ou Não)
+                TextFieldContainer(
+                  child: Container(
+                    child: Row(children: [
+                      Padding(
+                        padding: const EdgeInsets.fromLTRB(2.0, 8.0, 14.0, 8.0),
+                        child: Image.asset(
+                          'images/icons/medication.png',
+                          color: kPrimaryColor,
+                        ),
+                      ),
+                      DropdownButton(
+                        value: _selectedDoencasPreex,
+                        items: _dropdownMenuDoencasPreex,
+                        onChanged: onChangeDropdownDoenca,
+                        underline: Container(
+                          height: 0,
+                        ),
+                        style: TextStyle(
+                            color: Colors.black54,
+                            fontFamily: 'Monda',
+                            fontSize: 16.0),
+                      ),
+                    ]),
                   ),
-                  child: Wrap(children: [
-                    Padding(
-                      padding: const EdgeInsets.fromLTRB(2.0, 8.0, 14.0, 8.0),
-                      child: Image.asset(
-                        'images/icons/virus.png',
-                        color: kPrimaryColor,
-                      ),
-                    ),
-                    SizedBox(
-                      width: 260.0,
-                      child: MultiSelectDialogField(
-                        chipDisplay: MultiSelectChipDisplay(
-                          chipColor: Color(0xFF15EBC4),
-                          textStyle: TextStyle(
-                              color: Colors.black54, fontFamily: 'Monda'),
-                          scroll: true,
-                        ),
-                        items: _items,
-                        title: Text("Selecione as Doenças"),
-                        selectedColor: Color(0xFF15EBC4),
-                        decoration: BoxDecoration(
-                          borderRadius: BorderRadius.all(Radius.circular(40)),
-                        ),
-                        buttonText: Text(
-                          "Possui Alguma Doença Preexistente?",
-                          style: TextStyle(
-                              color: Colors.black54, fontFamily: 'Monda'),
-                        ),
-                        onConfirm: (results) {
-                          doencaspreex = results.toString();
-                          print(results.toString());
-                        },
-                      ),
-                    ),
-                  ]),
                 ),
+
 //Remedios de Uso Contínuo
                 Container(
                   margin: EdgeInsets.symmetric(vertical: 10),
@@ -760,22 +792,43 @@ class _TelaAddPerfilState extends State<TelaAddPerfil> {
                     print("Print botão criar $idDoc");
                     print("Print enviou NULL $name_prof");
 
-                    if (name_prof == null ||
-                        fam_name_prof == null ||
-                        birth_prof == null ||
-                        rg_prof == null ||
-                        mom_name_prof == null ||
-                        _selectedSexo.sexo == null ||
-                        doencaspreex == null ||
-                        remCont == null ||
-                        d_allergy_prof == null ||
-                        _selectedAlergRem.alergRem == null ||
-                        _selectedSang.tipoSang == null ||
-                        _selectedPlanSau.planSau == null ||
-                        n_health_prof == null ||
-                        height_prof == null ||
-                        weight_prof == null) {
-                      print('ERRO Favor preencher os campos');
+                    if (name_prof == null) {
+                      nameNull = OutlineInputBorder(
+                          borderSide:
+                              const BorderSide(color: Colors.red, width: 0.0));
+                    }
+                    if (fam_name_prof == null) {
+                      famNull = OutlineInputBorder();
+                    }
+                    if (birth_prof == null) {
+                      nascNull = OutlineInputBorder();
+                    }
+                    if (rg_prof == null) {
+                      rgNull = OutlineInputBorder();
+                    }
+                    if (mom_name_prof == null) {
+                      momNull = OutlineInputBorder();
+                    }
+                    if (_selectedSexo.sexo == null) {
+                      sexoNull = OutlineInputBorder();
+                    }
+                    if (doencaspreex == null) {
+                      doecasNull = OutlineInputBorder();
+                    }
+                    if (remCont == null) {
+                      remContNull = OutlineInputBorder();
+                    }
+                    if (d_allergy_prof == null) {
+                      alergRemNull = OutlineInputBorder();
+                    }
+                    if (_selectedAlergRem.alergRem == null) {
+                      nameNull = OutlineInputBorder();
+                    }
+                    if (_selectedPlanSau.planSau == null) {
+                      planSauNull = OutlineInputBorder();
+                    }
+                    if (n_health_prof == null) {
+                      numPlanSau = OutlineInputBorder();
                     }
 
                     if (qtd == '0') {

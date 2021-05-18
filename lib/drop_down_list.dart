@@ -73,3 +73,17 @@ class AlergiaRemed {
     ];
   }
 }
+
+class DoencaPreex {
+  String doencapreex;
+
+  DoencaPreex(this.doencapreex);
+
+  static List<DoencaPreex> getDoencaPreex() {
+    return <DoencaPreex>[
+      DoencaPreex('Possui Doenças Preexistentes?'),
+      DoencaPreex('Sim'),
+      DoencaPreex('Não'),
+    ];
+  }
+}
