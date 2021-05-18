@@ -149,6 +149,44 @@ class PerfilCard extends StatelessWidget {
   final String textFamName;
   final String textRG;
 
+  showAlertDialog(BuildContext context) {
+    // set up the button
+    Widget editButton = TextButton(
+      child: Text("Editar"),
+      onPressed: () {
+        Navigator.push(context, MaterialPageRoute(builder: (context) {
+          return PerfilScreen();
+        }));
+      },
+    );
+    Widget excluirButton = TextButton(
+      child: Text("Excluir"),
+      onPressed: () {
+        Navigator.push(context, MaterialPageRoute(builder: (context) {
+          return PerfilScreen();
+        }));
+      },
+    );
+
+    // set up the AlertDialog
+    AlertDialog alert = AlertDialog(
+      title: Text("Alerta"),
+      content: Text("O'que deseja fazer com esse perfil ?"),
+      actions: [
+        editButton,
+        excluirButton,
+      ],
+    );
+
+    // show the dialog
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return alert;
+      },
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -162,6 +200,9 @@ class PerfilCard extends StatelessWidget {
               },
             ),
           );
+        },
+        onLongPress: () {
+          showAlertDialog(context);
         },
         child: Card(
           shape: RoundedRectangleBorder(
@@ -177,7 +218,7 @@ class PerfilCard extends StatelessWidget {
                   height: 80.0,
                   decoration: BoxDecoration(
                     image: DecorationImage(
-                      image: AssetImage('images/cayo.png'),
+                      image: AssetImage('images/images.png'),
                     ),
                     shape: BoxShape.circle,
                   ),

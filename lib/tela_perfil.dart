@@ -1,5 +1,5 @@
+import 'package:Quiron/text_field_container.dart';
 import 'package:flutter/material.dart';
-import 'rounded_input_field.dart';
 import 'rounded_button.dart';
 import 'constants.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -110,7 +110,6 @@ class TelaPerfil extends StatelessWidget {
                       final dadoMedici = dado.get('medicine_prof');
                       final dadoMom = dado.get('mom_name_prof');
                       final dadoNHealth = dado.get('n_health_prof');
-
                       final dadoRG = dado.get('rg_prof');
                       final dadoSex = dado.get('sex_prof');
                       final dadoWeight = dado.get('weight_prof');
@@ -201,7 +200,6 @@ class InputField extends StatelessWidget {
     this.textMedici,
     this.textMom,
     this.textNHealth,
-    this.textProx,
     this.textRG,
     this.textSex,
     this.textWeight,
@@ -219,7 +217,7 @@ class InputField extends StatelessWidget {
   final String textMedici;
   final String textMom;
   final String textNHealth;
-  final String textProx;
+
   final String textRG;
   final String textSex;
   final String textWeight;
@@ -232,59 +230,73 @@ class InputField extends StatelessWidget {
     return Column(
       children: <Widget>[
         RoundedInputField(
+          labelText: "Nome ",
           hintText: '$textName $textFamName',
           onChanged: (value) {},
         ),
         RoundedInputField(
-          hintText: textBirth,
+          labelText: "Data De Nascimento ",
+          hintText: '$textBirth',
           onChanged: (value) {},
         ),
         RoundedInputField(
-          hintText: textRG,
+          hintText: '$textRG',
+          labelText: "RG",
           onChanged: (value) {},
         ),
         RoundedInputField(
-          hintText: textMom,
+          hintText: '$textMom',
+          labelText: "Nome Da Mae ",
           onChanged: (value) {},
         ),
         RoundedInputField(
-          hintText: textSex,
+          hintText: '$textSex',
+          labelText: "Sexo",
           onChanged: (value) {},
         ),
         RoundedInputField(
           hintText: '$textHeight cm',
+          labelText: "Altura",
           onChanged: (value) {},
         ),
         RoundedInputField(
           hintText: '$textWeight Kg',
+          labelText: "Peso",
           onChanged: (value) {},
         ),
         RoundedInputField(
-          hintText: textDise,
+          hintText: '$textDise',
+          labelText: "Doenças pré-existentes",
           onChanged: (value) {},
         ),
         RoundedInputField(
-          hintText: textMedici,
+          hintText: '$textMedici',
+          labelText: "Medicamento",
           onChanged: (value) {},
         ),
         RoundedInputField(
-          hintText: textAllergy,
+          hintText: '$textAllergy',
+          labelText: "Alergia de Medicamento",
           onChanged: (value) {},
         ),
         RoundedInputField(
-          hintText: textDAlergy,
+          hintText: '$textDAlergy',
+          labelText: "Remedios uso continuo",
           onChanged: (value) {},
         ),
         RoundedInputField(
-          hintText: textBlood,
+          hintText: '$textBlood',
+          labelText: "Tipo Sanfuieno",
           onChanged: (value) {},
         ),
         RoundedInputField(
-          hintText: textHealth,
+          hintText: '$textHealth',
+          labelText: "Plano de Saude",
           onChanged: (value) {},
         ),
         RoundedInputField(
-          hintText: textNHealth,
+          hintText: '$textNHealth',
+          labelText: "Numero da carterinha",
           onChanged: (value) {},
         ),
       ],
@@ -292,6 +304,7 @@ class InputField extends StatelessWidget {
   }
 }
 
+// ignore: camel_case_types
 class TextField_Container extends StatelessWidget {
   final Widget child;
   const TextField_Container({
@@ -311,6 +324,45 @@ class TextField_Container extends StatelessWidget {
         borderRadius: BorderRadius.circular(29),
       ),
       child: child,
+    );
+  }
+}
+
+class RoundedInputField extends StatelessWidget {
+  final String hintText;
+  final String labelText;
+  final IconData icon;
+  final ValueChanged<String> onChanged;
+  const RoundedInputField({
+    Key key,
+    this.hintText,
+    this.icon,
+    this.onChanged,
+    this.labelText,
+  }) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return TextFieldContainer(
+      child: Column(
+        children: [
+          Text(labelText),
+          Text(hintText)
+          //TextField(
+          //  style: TextStyle(color: Colors.black54, fontFamily: 'Monda'),
+          // onChanged: onChanged,
+          //  cursorColor: kPrimaryColor,
+          //  decoration: InputDecoration(
+          //    icon: Icon(
+          //      icon,
+          //     color: kPrimaryColor,
+          //    ),
+          //   hintText: hintText,
+          //   border: InputBorder.none,
+          // ),
+          //),
+        ],
+      ),
     );
   }
 }

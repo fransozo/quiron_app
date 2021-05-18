@@ -9,6 +9,7 @@ class RoundedInputField extends StatelessWidget {
   final IconData icon;
   final int maxlength;
   final bool enable;
+  final TextEditingController controller;
   final ValueChanged<String> onChanged;
   final TextInputType keyboardtype;
   const RoundedInputField(
@@ -19,6 +20,7 @@ class RoundedInputField extends StatelessWidget {
       this.keyboardtype,
       this.enable,
       this.ontap,
+      this.controller,
       this.maxlength})
       : super(key: key);
 
@@ -30,6 +32,7 @@ class RoundedInputField extends StatelessWidget {
         keyboardType: keyboardtype,
         maxLength: maxlength,
         onTap: ontap,
+        controller: controller,
         onChanged: onChanged,
         cursorColor: kPrimaryColor,
         enabled: enable,

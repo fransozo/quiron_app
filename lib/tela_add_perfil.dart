@@ -9,6 +9,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'drop_down_list.dart';
 import 'package:multi_select_flutter/multi_select_flutter.dart';
+import 'teste.dart';
 
 class TelaAddPerfil extends StatefulWidget {
   final Widget child;
@@ -20,11 +21,11 @@ class TelaAddPerfil extends StatefulWidget {
   _TelaAddPerfilState createState() => _TelaAddPerfilState();
 }
 
-class Animal {
+class Doenca {
   final int id;
   final String name;
 
-  Animal({
+  Doenca({
     this.id,
     this.name,
   });
@@ -48,18 +49,32 @@ class Remedio {
   }
 }
 
+class AlergRemed {
+  final int id;
+  final String name;
+
+  AlergRemed({
+    this.id,
+    this.name,
+  });
+
+  String toString() {
+    return '$name';
+  }
+}
+
 class _TelaAddPerfilState extends State<TelaAddPerfil> {
-  static List<Animal> _animals = [
-    Animal(id: 1, name: "Hipertensão"),
-    Animal(id: 2, name: "Diabetes"),
-    Animal(id: 3, name: "Asma"),
-    Animal(id: 4, name: "Câncer"),
-    Animal(id: 5, name: "Artrite"),
-    Animal(id: 6, name: "Insuficiência Renal"),
-    Animal(id: 7, name: "Obesidade"),
-    Animal(id: 8, name: "Depressão"),
-    Animal(id: 9, name: "AVC"),
-    Animal(id: 10, name: "Colesterol Alto"),
+  static List<Doenca> _doencas = [
+    Doenca(id: 1, name: "Hipertensão"),
+    Doenca(id: 2, name: "Diabetes"),
+    Doenca(id: 3, name: "Asma"),
+    Doenca(id: 4, name: "Câncer"),
+    Doenca(id: 5, name: "Artrite"),
+    Doenca(id: 6, name: "Insuficiência Renal"),
+    Doenca(id: 7, name: "Obesidade"),
+    Doenca(id: 8, name: "Depressão"),
+    Doenca(id: 9, name: "AVC"),
+    Doenca(id: 10, name: "Colesterol Alto"),
   ];
 
   static List<Remedio> _remedio = [
@@ -75,43 +90,60 @@ class _TelaAddPerfilState extends State<TelaAddPerfil> {
     Remedio(id: 10, name: "Fenofibrato"),
   ];
 
-  final _items = _animals
-      .map((animal) => MultiSelectItem<Animal>(animal, animal.name))
-      .toList();
-  List<Animal> _selectedAnimals = [];
-  //List<Animal> _selectedAnimals2 = [];
-  //List<Animal> _selectedAnimals3 = [];
-  //List<Animal> _selectedAnimals4 = [];
-  //List<Animal> _selectedAnimals5 = [];
-  //final _multiSelectKey = GlobalKey<FormFieldState>();
+  static List<AlergRemed> _alergremed = [
+    AlergRemed(id: 1, name: "Losartana"),
+    AlergRemed(id: 2, name: "Glifage"),
+    AlergRemed(id: 3, name: "Hidroclorotiazida"),
+    AlergRemed(id: 4, name: "Rivotril"),
+    AlergRemed(id: 5, name: "Metformina"),
+    AlergRemed(id: 6, name: "Symbicort"),
+    AlergRemed(id: 7, name: "Loratadina"),
+    AlergRemed(id: 8, name: "Diazepam"),
+    AlergRemed(id: 9, name: "Sinvastatina"),
+    AlergRemed(id: 10, name: "Fenofibrato"),
+  ];
 
-  //void initState() {
-  //  _selectedAnimals5 = _animals;
-  //  super.initState();
-  //}
+  final _items = _doencas
+      .map((doenca) => MultiSelectItem<Doenca>(doenca, doenca.name))
+      .toList();
 
   final _itemsRemedios = _remedio
       .map((remedio) => MultiSelectItem<Remedio>(remedio, remedio.name))
       .toList();
-  List<Animal> _selectedRemedios = [];
-  //List<Animal> _selectedAnimals2 = [];
-  //List<Animal> _selectedAnimals3 = [];
-  //List<Animal> _selectedAnimals4 = [];
-  //List<Animal> _selectedAnimals5 = [];
-  //final _multiSelectKey = GlobalKey<FormFieldState>();
 
-  //void initState() {
-  //  _selectedAnimals5 = _animals;
-  //  super.initState();
-  //}
+  final _itemsAlergMed = _alergremed
+      .map((alergremed) =>
+          MultiSelectItem<AlergRemed>(alergremed, alergremed.name))
+      .toList();
 
   final _firestore = FirebaseFirestore.instance;
-
   final _auth = FirebaseAuth.instance;
-
   String emailUser;
-
   String email;
+  final TextEditingController _controller = TextEditingController();
+  final TextEditingController _controller1 = TextEditingController();
+  final TextEditingController _controller2 = TextEditingController();
+  final TextEditingController _controller3 = TextEditingController();
+  final TextEditingController _controller4 = TextEditingController();
+  final TextEditingController _controller5 = TextEditingController();
+  final TextEditingController _controller6 = TextEditingController();
+  final TextEditingController _controller7 = TextEditingController();
+  final TextEditingController _controller8 = TextEditingController();
+  final TextEditingController _controller9 = TextEditingController();
+
+  void dispose() {
+    _controller.dispose();
+    _controller1.dispose();
+    _controller2.dispose();
+    _controller3.dispose();
+    _controller4.dispose();
+    _controller5.dispose();
+    _controller6.dispose();
+    _controller7.dispose();
+    _controller8.dispose();
+    _controller9.dispose();
+    super.dispose();
+  }
 
   void getCurrentUserEmail() async {
     User emailUser = _auth.currentUser;
@@ -417,6 +449,7 @@ class _TelaAddPerfilState extends State<TelaAddPerfil> {
                   ],
                 ),
                 RoundedInputField(
+                  controller: _controller,
                   hintText: "Nome",
                   icon: Icons.person,
                   onChanged: (value) {
@@ -424,6 +457,7 @@ class _TelaAddPerfilState extends State<TelaAddPerfil> {
                   },
                 ),
                 RoundedInputField(
+                  controller: _controller1,
                   hintText: "Sobrenome",
                   icon: Icons.person,
                   onChanged: (value) {
@@ -431,6 +465,7 @@ class _TelaAddPerfilState extends State<TelaAddPerfil> {
                   },
                 ),
                 RoundedInputField(
+                  controller: _controller2,
                   keyboardtype: TextInputType.datetime,
                   icon: Icons.cake,
                   maxlength: 10,
@@ -440,6 +475,7 @@ class _TelaAddPerfilState extends State<TelaAddPerfil> {
                   },
                 ),
                 RoundedInputField(
+                  controller: _controller3,
                   icon: Icons.badge,
                   hintText: "RG",
                   onChanged: (value) {
@@ -447,6 +483,7 @@ class _TelaAddPerfilState extends State<TelaAddPerfil> {
                   },
                 ),
                 RoundedInputField(
+                  controller: _controller4,
                   hintText: "Nome da Mãe",
                   onChanged: (value) {
                     mom_name_prof = value;
@@ -480,6 +517,7 @@ class _TelaAddPerfilState extends State<TelaAddPerfil> {
                 ),
                 TextFieldContainer(
                   child: TextField(
+                    controller: _controller5,
                     keyboardType: TextInputType.number,
                     inputFormatters: <TextInputFormatter>[
                       FilteringTextInputFormatter.digitsOnly
@@ -504,6 +542,7 @@ class _TelaAddPerfilState extends State<TelaAddPerfil> {
                 ),
                 TextFieldContainer(
                   child: TextField(
+                    controller: _controller6,
                     keyboardType: TextInputType.number,
                     inputFormatters: <TextInputFormatter>[
                       FilteringTextInputFormatter.digitsOnly
@@ -524,7 +563,7 @@ class _TelaAddPerfilState extends State<TelaAddPerfil> {
                     ),
                   ),
                 ),
-//Doencas de Uso Continuo
+//Doencas Preexistentes
                 Container(
                   margin: EdgeInsets.symmetric(vertical: 10),
                   padding: EdgeInsets.symmetric(horizontal: 20, vertical: 5),
@@ -642,6 +681,7 @@ class _TelaAddPerfilState extends State<TelaAddPerfil> {
                 ),
 //Nome do medicamento que é alérgico.
                 RoundedInputField(
+                  controller: _controller7,
                   hintText: "Qual medicamento?",
                   enable: enableCampoMed(),
                   onChanged: (value) {
@@ -702,6 +742,7 @@ class _TelaAddPerfilState extends State<TelaAddPerfil> {
                 ),
 //Carteirinha do Plano
                 RoundedInputField(
+                  controller: _controller8,
                   hintText: "Número da Carteirinha",
                   enable: enableCampoCart(),
                   onChanged: (value) {
@@ -717,6 +758,25 @@ class _TelaAddPerfilState extends State<TelaAddPerfil> {
                     dynamic qtd = await documentId();
 
                     print("Print botão criar $idDoc");
+                    print("Print enviou NULL $name_prof");
+
+                    if (name_prof == null ||
+                        fam_name_prof == null ||
+                        birth_prof == null ||
+                        rg_prof == null ||
+                        mom_name_prof == null ||
+                        _selectedSexo.sexo == null ||
+                        doencaspreex == null ||
+                        remCont == null ||
+                        d_allergy_prof == null ||
+                        _selectedAlergRem.alergRem == null ||
+                        _selectedSang.tipoSang == null ||
+                        _selectedPlanSau.planSau == null ||
+                        n_health_prof == null ||
+                        height_prof == null ||
+                        weight_prof == null) {
+                      print('ERRO Favor preencher os campos');
+                    }
 
                     if (qtd == '0') {
                       _firestore
@@ -770,10 +830,10 @@ class _TelaAddPerfilState extends State<TelaAddPerfil> {
                 RoundedButton(
                   text: "Teste",
                   press: () {
-                    //Navigator.push(context,
-                    //  MaterialPageRoute(builder: (context) {
-                    //return MyApp();
-                    //}));
+                    Navigator.push(context,
+                        MaterialPageRoute(builder: (context) {
+                      return MyApp();
+                    }));
                   },
                 ),
               ],
