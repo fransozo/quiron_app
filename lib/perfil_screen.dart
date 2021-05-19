@@ -13,7 +13,7 @@ class PerfilScreen extends StatefulWidget {
 
 class _PerfilScreen extends State<PerfilScreen> {
   final FirebaseAuth _auth = FirebaseAuth.instance;
-  final FirebaseFirestore _firestore = FirebaseFirestore.instance;
+  final FirebaseFirestore firestore = FirebaseFirestore.instance;
 
   User user;
   bool isloggedin = false;
@@ -50,26 +50,45 @@ class _PerfilScreen extends State<PerfilScreen> {
   String emailUser;
   String email;
   String idDoc;
+
+  String qtd_perfil;
   void getCurrentUserEmail() async {
     User emailUser = _auth.currentUser;
     email = emailUser.email;
-    print("METODO GET CURRENT EMAIL $email");
+    print("****METODO GET CURRENT USER EMAIL: $email");
   }
 
   getProfiles() async {
     getCurrentUserEmail();
-    QuerySnapshot resultado = await _firestore
+    QuerySnapshot resultado = await firestore
         .collection("usuarios")
         .where("emailUser", isEqualTo: "$email")
         .get();
     resultado.docs.forEach((d) {
       idDoc = d.id;
+      qtd_perfil = d.get('qtd_perfil');
+      print(qtd_perfil);
+      print("****ID do documento:");
+      print(d.id);
+    });
+  }
+
+  getIdDocsProfiles() async {
+    getProfiles();
+    QuerySnapshot resultado = await firestore
+        .collection("perfil")
+        .where("id_user", isEqualTo: "$email")
+        .get();
+    resultado.docs.forEach((d) {
+      idDoc = d.id;
+      print("****Abaixo estão todos os perfis do usuário conectado");
       print(d.id);
     });
   }
 
   Widget build(BuildContext context) {
     getProfiles();
+    getIdDocsProfiles();
 
     return Scaffold(
       appBar: PreferredSize(
@@ -83,7 +102,7 @@ class _PerfilScreen extends State<PerfilScreen> {
                 children: <Widget>[
                   // PerfilCard(),
                   StreamBuilder<QuerySnapshot>(
-                    stream: _firestore
+                    stream: firestore
                         .collection('perfil')
                         .where("id_user", isEqualTo: "$email")
                         .snapshots(),
@@ -102,12 +121,16 @@ class _PerfilScreen extends State<PerfilScreen> {
                         final dadoName = dado.get('name_prof');
                         final dadoFamName = dado.get('fam_name_prof');
                         final dadoRG = dado.get('rg_prof');
+                        final dadoIdDoc = dado.id;
 
                         final dadosWidget = PerfilCard(
-                          textName: dadoName,
-                          textFamName: dadoFamName,
-                          textRG: dadoRG,
-                        );
+                            textName: dadoName,
+                            textFamName: dadoFamName,
+                            textRG: dadoRG,
+                            qtd_perfil: qtd_perfil,
+                            id: dadoIdDoc,
+                            idDoc: idDoc,
+                            firestore: firestore);
 
                         dadosWidgets.add(dadosWidget);
                       }
@@ -142,12 +165,35 @@ class PerfilCard extends StatelessWidget {
     this.textName,
     this.textFamName,
     this.textRG,
+    this.firestore,
+    this.id,
+    this.qtd_perfil,
+    this.idDoc,
     Key key,
   }) : super(key: key);
 
+  final FirebaseFirestore firestore;
+  final String id;
+  final String idDoc;
   final String textName;
   final String textFamName;
   final String textRG;
+  final String qtd_perfil;
+
+  updateQtdProfiles() {
+    print(qtd_perfil);
+    print(idDoc);
+
+    if (qtd_perfil == '4') {
+      firestore.collection('usuarios').doc(idDoc).update({'qtd_perfil': '3'});
+    } else if (qtd_perfil == '3') {
+      firestore.collection('usuarios').doc(idDoc).update({'qtd_perfil': '2'});
+    } else if (qtd_perfil == '2') {
+      firestore.collection('usuarios').doc(idDoc).update({'qtd_perfil': '1'});
+    } else if (qtd_perfil == '1') {
+      firestore.collection('usuarios').doc(idDoc).update({'qtd_perfil': '0'});
+    }
+  }
 
   showAlertDialog(BuildContext context) {
     // set up the button
@@ -162,6 +208,10 @@ class PerfilCard extends StatelessWidget {
     Widget excluirButton = TextButton(
       child: Text("Excluir"),
       onPressed: () {
+        updateQtdProfiles();
+        firestore.collection('perfil').doc(id).delete();
+        print("****Perfil Excluído");
+
         Navigator.push(context, MaterialPageRoute(builder: (context) {
           return PerfilScreen();
         }));
