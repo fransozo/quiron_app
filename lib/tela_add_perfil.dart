@@ -122,10 +122,10 @@ class _TelaAddPerfilState extends State<TelaAddPerfil> {
   InputBorder rgNull = InputBorder.none;
   InputBorder momNull = InputBorder.none;
   Color sexoNull;
-  InputBorder doecasNull = InputBorder.none;
-  InputBorder remContNull = InputBorder.none;
-  InputBorder alergRemNull = InputBorder.none;
-  InputBorder planSauNull = InputBorder.none;
+  Color doencasNull;
+  Color remContNull;
+  Color alergRemNull;
+  Color planSauNull;
   InputBorder numPlanSau = InputBorder.none;
 
   final TextEditingController _controller = TextEditingController();
@@ -853,39 +853,43 @@ class _TelaAddPerfilState extends State<TelaAddPerfil> {
                     if (_selectedSexo.sexo == "Sexo") {
                       sexoNull = Colors.red;
                     }
-                    if (doencaspreex == null) {
-                      doecasNull = OutlineInputBorder();
+                    if (doencaspreex == "Possui Doenças Preexistentes?") {
+                      doencasNull = Colors.red;
                     }
-                    if (remCont == null) {
-                      remContNull = OutlineInputBorder();
+                    if (remCont == "Remédios de Uso Contínuo") {
+                      remContNull = Colors.red;
                     }
-                    if (d_allergy_prof == null) {
-                      alergRemNull = OutlineInputBorder();
+                    if (d_allergy_prof == 'Possui Alergia a Algum Remédio?') {
+                      alergRemNull = Colors.red;
                     }
                     if (_selectedAlergRem.alergRem == null) {
-                      alergRemNull = OutlineInputBorder();
+                      alergRemNull = Colors.red;
                     }
-                    if (_selectedPlanSau.planSau == null) {
-                      planSauNull = OutlineInputBorder();
+
+                    if (_selectedSang.tipoSang == null) {
+                      _selectedSang.tipoSang = "";
+                    }
+
+                    if (_selectedPlanSau.planSau == "Possui Plano de Saúde?") {
+                      planSauNull = Colors.red;
                     }
                     if (n_health_prof == null) {
-                      numPlanSau = OutlineInputBorder();
+                      numPlanSau = OutlineInputBorder(
+                          borderRadius: BorderRadius.all(Radius.circular(29.0)),
+                          borderSide: BorderSide(color: Colors.red));
                     }
                     if (name_prof == null ||
                         fam_name_prof == null ||
                         birth_prof == null ||
                         rg_prof == null ||
                         mom_name_prof == null ||
-                        _selectedSexo.sexo == null ||
-                        doencaspreex == null ||
-                        remCont == null ||
-                        d_allergy_prof == null ||
+                        _selectedSexo.sexo == "Sexo" ||
+                        doencaspreex == "Possui Doenças Preexistentes?" ||
+                        remCont == "Remédios de Uso Contínuo" ||
+                        d_allergy_prof == 'Possui Alergia a Algum Remédio?' ||
                         _selectedAlergRem.alergRem == null ||
-                        _selectedSang.tipoSang == null ||
-                        _selectedPlanSau.planSau == null ||
-                        n_health_prof == null ||
-                        height_prof == null ||
-                        weight_prof == null) {
+                        _selectedPlanSau.planSau == "Possui Plano de Saúde?" ||
+                        n_health_prof == null) {
                       return showAlertForm(context);
                     }
 
