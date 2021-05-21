@@ -6,7 +6,7 @@ import 'constants.dart';
 class RoundedInputField extends StatelessWidget {
   final String hintText;
   final Function ontap;
-  final IconData icon;
+  final Widget icon;
   final int maxlength;
   final bool enable;
   final InputBorder border;
@@ -29,6 +29,10 @@ class RoundedInputField extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return TextFieldContainer(
+      decoration: BoxDecoration(
+        color: kPrimaryLightColor,
+        borderRadius: BorderRadius.circular(29),
+      ),
       child: TextField(
         style: TextStyle(color: Colors.black54, fontFamily: 'Monda'),
         keyboardType: keyboardtype,
@@ -40,10 +44,7 @@ class RoundedInputField extends StatelessWidget {
         enabled: enable,
         decoration: InputDecoration(
           counterText: "",
-          icon: Icon(
-            icon,
-            color: kPrimaryColor,
-          ),
+          icon: icon,
           hintText: hintText,
           enabledBorder: border,
         ),

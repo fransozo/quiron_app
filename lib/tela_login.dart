@@ -4,6 +4,7 @@ import 'Firebase/auth.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'perfil_screen.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'constants.dart';
 
 class LoginPage extends StatefulWidget {
   LoginPage({this.auth, this.onSignedIn});
@@ -120,6 +121,10 @@ class _LoginPageState extends State<LoginPage> {
       Image.asset("images/quiron_logo.png", width: 220, height: 220),
       Center(
         child: TextFieldContainer(
+          decoration: BoxDecoration(
+            color: kPrimaryLightColor,
+            borderRadius: BorderRadius.circular(29),
+          ),
           child: TextFormField(
             validator: (value) =>
                 value.isEmpty ? "Favor preencher um endereço de E-mail" : null,
@@ -138,6 +143,10 @@ class _LoginPageState extends State<LoginPage> {
       ),
       Center(
         child: TextFieldContainer(
+          decoration: BoxDecoration(
+            color: kPrimaryLightColor,
+            borderRadius: BorderRadius.circular(29),
+          ),
           child: TextFormField(
             validator: (value) =>
                 value.isEmpty ? "Favor preencher a senha" : null,

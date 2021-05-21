@@ -74,6 +74,20 @@ class AlergiaRemed {
   }
 }
 
+class RemedCont {
+  String remedCont;
+
+  RemedCont(this.remedCont);
+
+  static List<RemedCont> getRemedCont() {
+    return <RemedCont>[
+      RemedCont('Remédio de Uso Contínuo'),
+      RemedCont('Sim'),
+      RemedCont('Não'),
+    ];
+  }
+}
+
 class DoencaPreex {
   String doencapreex;
 

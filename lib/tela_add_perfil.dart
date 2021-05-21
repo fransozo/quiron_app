@@ -8,8 +8,8 @@ import 'perfil_screen.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'drop_down_list.dart';
+import 'dinamico.dart';
 import 'package:multi_select_flutter/multi_select_flutter.dart';
-import 'teste.dart';
 
 class TelaAddPerfil extends StatefulWidget {
   final Widget child;
@@ -21,113 +21,60 @@ class TelaAddPerfil extends StatefulWidget {
   _TelaAddPerfilState createState() => _TelaAddPerfilState();
 }
 
-class Doenca {
-  final int id;
-  final String name;
-
-  Doenca({
-    this.id,
-    this.name,
-  });
-
-  String toString() {
-    return '$name';
-  }
-}
-
-class Remedio {
-  final int id;
-  final String name;
-
-  Remedio({
-    this.id,
-    this.name,
-  });
-
-  String toString() {
-    return '$name';
-  }
-}
-
-class AlergRemed {
-  final int id;
-  final String name;
-
-  AlergRemed({
-    this.id,
-    this.name,
-  });
-
-  String toString() {
-    return '$name';
-  }
-}
-
 class _TelaAddPerfilState extends State<TelaAddPerfil> {
-  // static List<Doenca> _doencas = [
-  //   Doenca(id: 1, name: "Hipertensão"),
-  //   Doenca(id: 2, name: "Diabetes"),
-  //   Doenca(id: 3, name: "Asma"),
-  //   Doenca(id: 4, name: "Câncer"),
-  //   Doenca(id: 5, name: "Artrite"),
-  //   Doenca(id: 6, name: "Insuficiência Renal"),
-  //   Doenca(id: 7, name: "Obesidade"),
-  //   Doenca(id: 8, name: "Depressão"),
-  //   Doenca(id: 9, name: "AVC"),
-  //   Doenca(id: 10, name: "Colesterol Alto"),
-  // ];
+  List<dynamic> initialvalue;
+  List<dynamic> initialvalueRemCont;
+  List<dynamic> initialvalueRemAlerg;
 
-  static List<Remedio> _remedio = [
-    Remedio(id: 1, name: "Losartana"),
-    Remedio(id: 2, name: "Glifage"),
-    Remedio(id: 3, name: "Hidroclorotiazida"),
-    Remedio(id: 4, name: "Rivotril"),
-    Remedio(id: 5, name: "Metformina"),
-    Remedio(id: 6, name: "Symbicort"),
-    Remedio(id: 7, name: "Loratadina"),
-    Remedio(id: 8, name: "Diazepam"),
-    Remedio(id: 9, name: "Sinvastatina"),
-    Remedio(id: 10, name: "Fenofibrato"),
-  ];
-
-  static List<AlergRemed> _alergremed = [
-    AlergRemed(id: 1, name: "Losartana"),
-    AlergRemed(id: 2, name: "Glifage"),
-    AlergRemed(id: 3, name: "Hidroclorotiazida"),
-    AlergRemed(id: 4, name: "Rivotril"),
-    AlergRemed(id: 5, name: "Metformina"),
-    AlergRemed(id: 6, name: "Symbicort"),
-    AlergRemed(id: 7, name: "Loratadina"),
-    AlergRemed(id: 8, name: "Diazepam"),
-    AlergRemed(id: 9, name: "Sinvastatina"),
-    AlergRemed(id: 10, name: "Fenofibrato"),
-  ];
-
-  final _itemsRemedios = _remedio
-      .map((remedio) => MultiSelectItem<Remedio>(remedio, remedio.name))
-      .toList();
-
-  final _itemsAlergMed = _alergremed
-      .map((alergremed) =>
-          MultiSelectItem<AlergRemed>(alergremed, alergremed.name))
-      .toList();
-
-  final _firestore = FirebaseFirestore.instance;
-  final _auth = FirebaseAuth.instance;
-  String emailUser;
-  String email;
+  InputBorder numPlanSau = InputBorder.none;
   InputBorder nameNull = InputBorder.none;
   InputBorder famNull = InputBorder.none;
   InputBorder nascNull = InputBorder.none;
   InputBorder rgNull = InputBorder.none;
   InputBorder momNull = InputBorder.none;
+  Decoration borderDoencaNull = BoxDecoration(
+      color: kPrimaryLightColor, borderRadius: BorderRadius.circular(29));
+  Decoration borderRemAlergNull = BoxDecoration(
+      color: kPrimaryLightColor, borderRadius: BorderRadius.circular(29));
+  Decoration borderRemContNull = BoxDecoration(
+      color: kPrimaryLightColor, borderRadius: BorderRadius.circular(29));
+
   Color sexoNull;
   Color doencasNull;
   Color remContNull;
   Color alergRemNull;
   Color planSauNull;
-  InputBorder numPlanSau = InputBorder.none;
+  Color doencasPreexNull;
+  Color remedContNull;
 
+  String emailUser;
+  String email;
+  String name_prof;
+  String fam_name_prof;
+  String birth_prof;
+  String rg_prof;
+  String mom_name_prof;
+  String sex_prof;
+  String dise_prof;
+  String medicine_prof;
+  String allergy_prof;
+  String d_allergy_prof;
+  String blood_prof;
+  String health_prof;
+  String n_health_prof;
+  String id_user;
+  String height_prof;
+  String qtdPerfis;
+  String idDoc;
+  String doencaspreex;
+  String remCont;
+  String weight_prof;
+  String doencasSelecionadas;
+  String remedContSelecionados;
+  String alergRemedSelecionados;
+
+  final _firestore = FirebaseFirestore.instance;
+  final _auth = FirebaseAuth.instance;
   final TextEditingController _controller = TextEditingController();
   final TextEditingController _controller1 = TextEditingController();
   final TextEditingController _controller2 = TextEditingController();
@@ -138,6 +85,7 @@ class _TelaAddPerfilState extends State<TelaAddPerfil> {
   final TextEditingController _controller7 = TextEditingController();
   final TextEditingController _controller8 = TextEditingController();
   final TextEditingController _controller9 = TextEditingController();
+  final TextEditingController _controller10 = TextEditingController();
 
   void dispose() {
     _controller.dispose();
@@ -150,6 +98,7 @@ class _TelaAddPerfilState extends State<TelaAddPerfil> {
     _controller7.dispose();
     _controller8.dispose();
     _controller9.dispose();
+    _controller10.dispose();
     super.dispose();
   }
 
@@ -158,27 +107,6 @@ class _TelaAddPerfilState extends State<TelaAddPerfil> {
     email = emailUser.email;
     print("$email");
   }
-
-  String name_prof,
-      fam_name_prof,
-      birth_prof,
-      rg_prof,
-      mom_name_prof,
-      sex_prof,
-      dise_prof,
-      medicine_prof,
-      allergy_prof,
-      d_allergy_prof,
-      blood_prof,
-      health_prof,
-      n_health_prof,
-      id_user,
-      height_prof,
-      qtdPerfis,
-      idDoc,
-      doencaspreex,
-      remCont,
-      weight_prof;
 
   Future<String> documentId() async {
     getCurrentUserEmail();
@@ -210,20 +138,23 @@ class _TelaAddPerfilState extends State<TelaAddPerfil> {
   void addPerfil() {
     _firestore.collection('perfil').add(
       {
-        'name_prof': name_prof,
-        'fam_name_prof': fam_name_prof,
-        'birth_prof': birth_prof,
-        'rg_prof': rg_prof,
-        'mom_name_prof': mom_name_prof,
-        'sex_prof': _selectedSexo.sexo,
-        'dise_prof': doencaspreex,
-        'medicine_prof': remCont,
-        'd_allergy_prof': d_allergy_prof,
-        'allergy_prof': _selectedAlergRem.alergRem,
-        'blood_prof': _selectedSang.tipoSang,
-        'health_prof': _selectedPlanSau.planSau,
-        'n_health_prof': n_health_prof,
-        'height_prof': height_prof,
+        //Envio Banco de dados
+        'name_prof': name_prof, //Nome
+        'fam_name_prof': fam_name_prof, //Sobrenome
+        'birth_prof': birth_prof, //Data de Nascimento
+        'rg_prof': rg_prof, //RG
+        'mom_name_prof': mom_name_prof, //Nome da Mãe
+        'sex_prof': _selectedSexo.sexo, //Sexo
+        'dise_prof': doencasSelecionadas, //Doencas Preexistentes
+        'medicine_prof': remedContSelecionados, //Remédios de Uso Contínuo
+        'allergy_prof':
+            alergRemedSelecionados, // Possui Alergia a algum Remédio (Sim ou Não)
+        //'d_allergy_prof': alergRemedSelecionados, //Nome dos Remédios Alérgicos
+        'blood_prof': _selectedSang.tipoSang, //Tipo Sanguíneo
+        'health_prof':
+            _selectedPlanSau.planSau, //Possui Plano de Saúde (Sim ou Não)
+        'n_health_prof': n_health_prof, //Numero da Carteirinha
+        'height_prof': height_prof, // Altura
         'weight_prof': weight_prof,
         'id_user': email,
       },
@@ -289,15 +220,62 @@ class _TelaAddPerfilState extends State<TelaAddPerfil> {
     );
   }
 
+  final _items = _doenca
+      .map((doenca) => MultiSelectItem<Doenca>(doenca, doenca.name))
+      .toList();
+
+  static List<Doenca> _doenca = [
+    Doenca(id: 1, name: "Hipertensão"),
+    Doenca(id: 2, name: "Diabetes"),
+    Doenca(id: 3, name: "Asma"),
+    Doenca(id: 4, name: "Câncer"),
+    Doenca(id: 5, name: "Artrite"),
+    Doenca(id: 6, name: "Colesterol Alto"),
+    Doenca(id: 7, name: "Obesidade"),
+    Doenca(id: 8, name: "Depressão"),
+    Doenca(id: 9, name: "AVC"),
+    Doenca(id: 10, name: "Insuficiência Renal"),
+  ];
+
+  final _itemsRemedios = _remedio
+      .map((remedio) => MultiSelectItem<Remedio>(remedio, remedio.name))
+      .toList();
+
+  static List<Remedio> _remedio = [
+    Remedio(id: 1, name: "Losartana"),
+    Remedio(id: 2, name: "Glifage"),
+    Remedio(id: 3, name: "Fenofibrato"),
+    Remedio(id: 4, name: "Rivotril"),
+    Remedio(id: 5, name: "Metformina"),
+    Remedio(id: 6, name: "Symbicort"),
+    Remedio(id: 7, name: "Loratadina"),
+    Remedio(id: 8, name: "Diazepam"),
+    Remedio(id: 9, name: "Sinvastatina"),
+    Remedio(id: 10, name: "Hidroclorotiazida"),
+  ];
+
+  final _itemsAlergRemed = _alergRemedio
+      .map((alergRemedio) =>
+          MultiSelectItem<AlergRemed>(alergRemedio, alergRemedio.name))
+      .toList();
+
+  static List<AlergRemed> _alergRemedio = [
+    AlergRemed(id: 1, name: "Losartana"),
+    AlergRemed(id: 2, name: "Glifage"),
+    AlergRemed(id: 3, name: "Fenofibrato"),
+    AlergRemed(id: 4, name: "Rivotril"),
+    AlergRemed(id: 5, name: "Metformina"),
+    AlergRemed(id: 6, name: "Symbicort"),
+    AlergRemed(id: 7, name: "Loratadina"),
+    AlergRemed(id: 8, name: "Diazepam"),
+    AlergRemed(id: 9, name: "Sinvastatina"),
+    AlergRemed(id: 10, name: "Hidroclorotiazida"),
+  ];
+
   //Lista Sexo
   List<Sexo> _sexo = Sexo.getSexo();
   List<DropdownMenuItem<Sexo>> _dropdownMenuItems;
   Sexo _selectedSexo;
-
-  //Lista Sangue
-  List<TipoSang> _sangue = TipoSang.getTipoSang();
-  List<DropdownMenuItem<TipoSang>> _dropdownMenuSangue;
-  TipoSang _selectedSang;
 
   //Lista Plano de Saúde
   List<PlanSau> _saude = PlanSau.getPlanSau();
@@ -309,10 +287,29 @@ class _TelaAddPerfilState extends State<TelaAddPerfil> {
   List<DropdownMenuItem<DoencaPreex>> _dropdownMenuDoencasPreex;
   DoencaPreex _selectedDoencasPreex;
 
+  //Lista Nome das Doenças Preexistentes
+  static List<String> doencasList = [];
+
+  //Lista Remedios de Uso Contínuo
+  List<RemedCont> _remedCont = RemedCont.getRemedCont();
+  List<DropdownMenuItem<RemedCont>> _dropdownMenuRemedCont;
+  RemedCont _selectedRemedCont;
+
+  //Lista o Nome dos Remédios de Uso Contínuo
+  static List<String> remContList = [];
+
   //Lista Alergia Remedios
   List<AlergiaRemed> _alergRem = AlergiaRemed.getAlergiaRemed();
   List<DropdownMenuItem<AlergiaRemed>> _dropdownMenuAlergRem;
   AlergiaRemed _selectedAlergRem;
+
+  //Lista Nome dos Remedios que tem Alergia
+  static List<String> alergRemList = [];
+
+  //Lista Sangue
+  List<TipoSang> _sangue = TipoSang.getTipoSang();
+  List<DropdownMenuItem<TipoSang>> _dropdownMenuSangue;
+  TipoSang _selectedSang;
 
   @override
   void initState() {
@@ -326,6 +323,8 @@ class _TelaAddPerfilState extends State<TelaAddPerfil> {
     _selectedAlergRem = _dropdownMenuAlergRem[0].value;
     _dropdownMenuDoencasPreex = buildDropdownMenuDoencaPreex(_doencas);
     _selectedDoencasPreex = _dropdownMenuDoencasPreex[0].value;
+    _dropdownMenuRemedCont = buildDropdownMenuRemedCont(_remedCont);
+    _selectedRemedCont = _dropdownMenuRemedCont[0].value;
     super.initState();
   }
 
@@ -401,6 +400,19 @@ class _TelaAddPerfilState extends State<TelaAddPerfil> {
     return items;
   }
 
+  List<DropdownMenuItem<RemedCont>> buildDropdownMenuRemedCont(List remedCont) {
+    List<DropdownMenuItem<RemedCont>> items = [];
+    for (RemedCont remedio in remedCont) {
+      items.add(
+        DropdownMenuItem(
+          value: remedio,
+          child: Text(remedio.remedCont),
+        ),
+      );
+    }
+    return items;
+  }
+
   onChangeDropdownSexo(Sexo selectedSexo) {
     setState(() {
       _selectedSexo = selectedSexo;
@@ -431,20 +443,22 @@ class _TelaAddPerfilState extends State<TelaAddPerfil> {
     });
   }
 
-  onSelectDoenca() {
-    setState(() {});
+  onChangeDropdownRemedCont(RemedCont selectedRemedCont) {
+    setState(() {
+      _selectedRemedCont = selectedRemedCont;
+    });
   }
 
   bool enableCampoDoencas() {
     bool enable;
-    if (_selectedAlergRem.alergRem == "Sim") {
+    if (_selectedDoencasPreex.doencapreex == "Sim") {
       enable = true;
     } else
       enable = false;
     return enable;
   }
 
-  bool enableCampoMed() {
+  bool enableCampoRemAlerg() {
     bool enable;
     if (_selectedAlergRem.alergRem == "Sim") {
       enable = true;
@@ -456,6 +470,15 @@ class _TelaAddPerfilState extends State<TelaAddPerfil> {
   bool enableCampoCart() {
     bool enable;
     if (_selectedPlanSau.planSau == "Sim") {
+      enable = true;
+    } else
+      enable = false;
+    return enable;
+  }
+
+  enableCampoRemCont() {
+    bool enable;
+    if (_selectedRemedCont.remedCont == "Sim") {
       enable = true;
     } else
       enable = false;
@@ -521,54 +544,69 @@ class _TelaAddPerfilState extends State<TelaAddPerfil> {
                     ),
                   ],
                 ),
+
+//              ***************** Formulário ******************
+//Nome
                 RoundedInputField(
                   border: nameNull,
                   controller: _controller,
                   hintText: "Nome",
-                  icon: Icons.person,
+                  icon: Icon(Icons.person, color: kPrimaryColor),
                   onChanged: (value) {
                     name_prof = value;
                   },
                 ),
+//Sobrenome
                 RoundedInputField(
                   border: famNull,
                   controller: _controller1,
                   hintText: "Sobrenome",
-                  icon: Icons.person,
+                  icon: Icon(Icons.person, color: kPrimaryColor),
                   onChanged: (value) {
                     fam_name_prof = value;
                   },
                 ),
+// Data de Nascimento
                 RoundedInputField(
                   border: nascNull,
                   controller: _controller2,
                   keyboardtype: TextInputType.datetime,
-                  icon: Icons.cake,
+                  icon: Icon(Icons.cake, color: kPrimaryColor),
                   maxlength: 10,
                   hintText: "Nascimento",
                   onChanged: (value) {
                     birth_prof = value;
                   },
                 ),
+//RG
                 RoundedInputField(
                   border: rgNull,
                   controller: _controller3,
-                  icon: Icons.badge,
+                  icon: Icon(Icons.badge, color: kPrimaryColor),
                   hintText: "RG",
                   onChanged: (value) {
                     rg_prof = value;
                   },
                 ),
+// Nome da Mãe
                 RoundedInputField(
                   border: momNull,
                   controller: _controller4,
                   hintText: "Nome da Mãe",
+                  icon: Image.asset(
+                    'images/icons/woman.png',
+                    color: kPrimaryColor,
+                  ),
                   onChanged: (value) {
                     mom_name_prof = value;
                   },
                 ),
-
+//Sexo  (Masculino ou Feminino)
                 TextFieldContainer(
+                  decoration: BoxDecoration(
+                    color: kPrimaryLightColor,
+                    borderRadius: BorderRadius.circular(29),
+                  ),
                   child: Container(
                     child: Row(children: [
                       Padding(
@@ -594,7 +632,12 @@ class _TelaAddPerfilState extends State<TelaAddPerfil> {
                     ]),
                   ),
                 ),
+//Altura
                 TextFieldContainer(
+                  decoration: BoxDecoration(
+                    color: kPrimaryLightColor,
+                    borderRadius: BorderRadius.circular(29),
+                  ),
                   child: TextField(
                     controller: _controller5,
                     keyboardType: TextInputType.number,
@@ -619,7 +662,12 @@ class _TelaAddPerfilState extends State<TelaAddPerfil> {
                     ),
                   ),
                 ),
+//Peso
                 TextFieldContainer(
+                  decoration: BoxDecoration(
+                    color: kPrimaryLightColor,
+                    borderRadius: BorderRadius.circular(29),
+                  ),
                   child: TextField(
                     controller: _controller6,
                     keyboardType: TextInputType.number,
@@ -642,8 +690,95 @@ class _TelaAddPerfilState extends State<TelaAddPerfil> {
                     ),
                   ),
                 ),
+
 //Doencas Preexistentes (Sim ou Não)
                 TextFieldContainer(
+                  decoration: BoxDecoration(
+                    color: kPrimaryLightColor,
+                    borderRadius: BorderRadius.circular(29),
+                  ),
+                  child: Container(
+                    child: Row(children: [
+                      Padding(
+                        padding: const EdgeInsets.fromLTRB(2.0, 8.0, 14.0, 8.0),
+                        child: Image.asset(
+                          'images/icons/virus.png',
+                          color: kPrimaryColor,
+                        ),
+                      ),
+                      DropdownButton(
+                        value: _selectedDoencasPreex,
+                        items: _dropdownMenuDoencasPreex,
+                        onChanged: onChangeDropdownDoenca,
+                        underline: Container(
+                          color: doencasPreexNull,
+                          height: 2,
+                        ),
+                        style: TextStyle(
+                            color: Colors.black54,
+                            fontFamily: 'Monda',
+                            fontSize: 16.0),
+                      ),
+                    ]),
+                  ),
+                ),
+//Opções das Doenças
+                Visibility(
+                    visible: enableCampoDoencas(),
+                    child: TextFieldContainer(
+                      decoration: borderDoencaNull,
+                      child: Container(
+                        child: Wrap(
+                          children: [
+                            Row(
+                              children: [
+                                Padding(
+                                  padding: const EdgeInsets.fromLTRB(
+                                      2.0, 8.0, 4.0, 8.0),
+                                  child: Image.asset(
+                                    'images/icons/virus.png',
+                                    color: kPrimaryColor,
+                                  ),
+                                ),
+                                SizedBox(
+                                  width: 260,
+                                  child: MultiSelectChipField(
+                                    height: 200,
+                                    scroll: false,
+                                    decoration: BoxDecoration(
+                                      color: kPrimaryLightColor,
+                                    ),
+                                    showHeader: false,
+                                    items: _items,
+                                    initialValue: initialvalue,
+                                    selectedChipColor:
+                                        kPrimaryColor.withOpacity(0.5),
+                                    selectedTextStyle:
+                                        TextStyle(color: Colors.black),
+                                    onTap: (values) {
+                                      doencasSelecionadas = values.toString();
+                                      print(doencasSelecionadas);
+                                      setState(() {
+                                        initialvalue = values;
+                                      });
+
+                                      //_selectedAnimals4 = values;
+                                    },
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ],
+                        ),
+                      ),
+                    )),
+
+//Remedios de Uso Contínuo (SIM ou NÃO)
+                TextFieldContainer(
+                  decoration: BoxDecoration(
+                    color: kPrimaryLightColor,
+                    borderRadius: BorderRadius.circular(29),
+                  ),
                   child: Container(
                     child: Row(children: [
                       Padding(
@@ -654,11 +789,12 @@ class _TelaAddPerfilState extends State<TelaAddPerfil> {
                         ),
                       ),
                       DropdownButton(
-                        value: _selectedDoencasPreex,
-                        items: _dropdownMenuDoencasPreex,
-                        onChanged: onChangeDropdownDoenca,
+                        value: _selectedRemedCont,
+                        items: _dropdownMenuRemedCont,
+                        onChanged: onChangeDropdownRemedCont,
                         underline: Container(
-                          height: 0,
+                          color: remContNull,
+                          height: 2,
                         ),
                         style: TextStyle(
                             color: Colors.black54,
@@ -669,53 +805,63 @@ class _TelaAddPerfilState extends State<TelaAddPerfil> {
                   ),
                 ),
 
-//Remedios de Uso Contínuo
-                Container(
-                  margin: EdgeInsets.symmetric(vertical: 10),
-                  padding: EdgeInsets.symmetric(horizontal: 20, vertical: 5),
-                  width: size.width * 0.8,
+//Nome do medicamento contínuo.
+                Visibility(
+                    visible: enableCampoRemCont(),
+                    child: TextFieldContainer(
+                      decoration: borderRemContNull,
+                      child: Container(
+                        child: Wrap(
+                          children: [
+                            Row(
+                              children: [
+                                Padding(
+                                  padding: const EdgeInsets.fromLTRB(
+                                      2.0, 8.0, 4.0, 8.0),
+                                  child: Image.asset(
+                                    'images/icons/virus.png',
+                                    color: kPrimaryColor,
+                                  ),
+                                ),
+                                SizedBox(
+                                  width: 265,
+                                  child: MultiSelectChipField(
+                                    height: 200,
+                                    scroll: false,
+                                    decoration: BoxDecoration(
+                                      color: kPrimaryLightColor,
+                                    ),
+                                    showHeader: false,
+                                    items: _itemsRemedios,
+                                    initialValue: initialvalueRemCont,
+                                    selectedChipColor:
+                                        kPrimaryColor.withOpacity(0.5),
+                                    selectedTextStyle:
+                                        TextStyle(color: Colors.black),
+                                    onTap: (values) {
+                                      remedContSelecionados = values.toString();
+                                      print(remedContSelecionados);
+                                      setState(() {
+                                        initialvalueRemCont = values;
+                                      });
+
+                                      //_selectedAnimals4 = values;
+                                    },
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ],
+                        ),
+                      ),
+                    )),
+
+//Possui Alergia a algum medicamento? (SIM ou NÃO)
+                TextFieldContainer(
                   decoration: BoxDecoration(
                     color: kPrimaryLightColor,
                     borderRadius: BorderRadius.circular(29),
                   ),
-                  child: Wrap(children: [
-                    Padding(
-                      padding: const EdgeInsets.fromLTRB(2.0, 8.0, 14.0, 8.0),
-                      child: Image.asset(
-                        'images/icons/medication.png',
-                        color: kPrimaryColor,
-                      ),
-                    ),
-                    SizedBox(
-                      width: 260.0,
-                      child: MultiSelectDialogField(
-                        chipDisplay: MultiSelectChipDisplay(
-                          chipColor: Color(0xFF15EBC4),
-                          textStyle: TextStyle(
-                              color: Colors.black54, fontFamily: 'Monda'),
-                          scroll: true,
-                        ),
-                        items: _itemsRemedios,
-                        title: Text("Selecione os Remédios"),
-                        selectedColor: Color(0xFF15EBC4),
-                        decoration: BoxDecoration(
-                          borderRadius: BorderRadius.all(Radius.circular(40)),
-                        ),
-                        buttonText: Text(
-                          "Remédios de Uso Contínuo",
-                          style: TextStyle(
-                              color: Colors.black54, fontFamily: 'Monda'),
-                        ),
-                        onConfirm: (results) {
-                          remCont = results.toString();
-                          print(results.toString());
-                        },
-                      ),
-                    ),
-                  ]),
-                ),
-//Possui Alergia a algum medicamento?;
-                TextFieldContainer(
                   child: Container(
                     child: Row(children: [
                       Padding(
@@ -730,7 +876,8 @@ class _TelaAddPerfilState extends State<TelaAddPerfil> {
                         items: _dropdownMenuAlergRem,
                         onChanged: onChangeDropdownAlergRem,
                         underline: Container(
-                          height: 0,
+                          color: alergRemNull,
+                          height: 2,
                         ),
                         style: TextStyle(
                             color: Colors.black54,
@@ -740,17 +887,64 @@ class _TelaAddPerfilState extends State<TelaAddPerfil> {
                     ]),
                   ),
                 ),
+
 //Nome do medicamento que é alérgico.
-                RoundedInputField(
-                  controller: _controller7,
-                  hintText: "Qual medicamento?",
-                  enable: enableCampoMed(),
-                  onChanged: (value) {
-                    d_allergy_prof = value;
-                  },
-                ),
+                Visibility(
+                    visible: enableCampoRemAlerg(),
+                    child: TextFieldContainer(
+                      decoration: borderRemAlergNull,
+                      child: Container(
+                        child: Wrap(
+                          children: [
+                            Row(
+                              children: [
+                                Padding(
+                                  padding: const EdgeInsets.fromLTRB(
+                                      2.0, 8.0, 4.0, 8.0),
+                                  child: Image.asset(
+                                    'images/icons/virus.png',
+                                    color: kPrimaryColor,
+                                  ),
+                                ),
+                                SizedBox(
+                                  width: 265,
+                                  child: MultiSelectChipField(
+                                    height: 200,
+                                    scroll: false,
+                                    decoration: BoxDecoration(
+                                      color: kPrimaryLightColor,
+                                    ),
+                                    showHeader: false,
+                                    items: _itemsAlergRemed,
+                                    initialValue: initialvalueRemAlerg,
+                                    selectedChipColor:
+                                        kPrimaryColor.withOpacity(0.5),
+                                    selectedTextStyle:
+                                        TextStyle(color: Colors.black),
+                                    onTap: (values) {
+                                      alergRemedSelecionados =
+                                          values.toString();
+                                      print(alergRemedSelecionados);
+                                      setState(() {
+                                        initialvalueRemAlerg = values;
+                                      });
+
+                                      //_selectedAnimals4 = values;
+                                    },
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ],
+                        ),
+                      ),
+                    )),
 //Tipo Sanguíneo
                 TextFieldContainer(
+                  decoration: BoxDecoration(
+                    color: kPrimaryLightColor,
+                    borderRadius: BorderRadius.circular(29),
+                  ),
                   child: Container(
                     child: Row(children: [
                       Padding(
@@ -777,6 +971,10 @@ class _TelaAddPerfilState extends State<TelaAddPerfil> {
                 ),
 //Plano de Saude
                 TextFieldContainer(
+                  decoration: BoxDecoration(
+                    color: kPrimaryLightColor,
+                    borderRadius: BorderRadius.circular(29),
+                  ),
                   child: Container(
                     child: Row(children: [
                       Padding(
@@ -804,8 +1002,10 @@ class _TelaAddPerfilState extends State<TelaAddPerfil> {
 //Carteirinha do Plano
                 RoundedInputField(
                   controller: _controller8,
+                  icon: Icon(Icons.credit_card, color: kPrimaryColor),
                   hintText: "Número da Carteirinha",
                   enable: enableCampoCart(),
+                  border: InputBorder.none,
                   onChanged: (value) {
                     n_health_prof = value;
                   },
@@ -818,10 +1018,11 @@ class _TelaAddPerfilState extends State<TelaAddPerfil> {
                     getDocId();
                     dynamic qtd = await documentId();
 
-                    print("Print botão criar $idDoc");
-                    print("Print enviou NULL $name_prof");
-                    print(_selectedSexo.sexo);
+                    print("*****ID do Documento Criado $idDoc");
+                    print("****Doenças $doencasSelecionadas");
+                    print("****Remédio Alergia $alergRemedSelecionados");
 
+//Altera Cor Nome NULL
                     if (name_prof == null) {
                       setState(() {
                         nameNull = OutlineInputBorder(
@@ -830,54 +1031,89 @@ class _TelaAddPerfilState extends State<TelaAddPerfil> {
                             borderSide: BorderSide(color: Colors.red));
                       });
                     }
+//Altera Cor Sobrenome NULL
                     if (fam_name_prof == null) {
                       famNull = OutlineInputBorder(
                           borderRadius: BorderRadius.all(Radius.circular(29.0)),
                           borderSide: BorderSide(color: Colors.red));
                     }
+//Altera Cor Data de Nascimento NULL
                     if (birth_prof == null) {
                       nascNull = OutlineInputBorder(
                           borderRadius: BorderRadius.all(Radius.circular(29.0)),
                           borderSide: BorderSide(color: Colors.red));
                     }
+//Altera Cor RG NULL
                     if (rg_prof == null) {
                       rgNull = OutlineInputBorder(
                           borderRadius: BorderRadius.all(Radius.circular(29.0)),
                           borderSide: BorderSide(color: Colors.red));
                     }
+//Altera Cor Nome da Mãe NULL
                     if (mom_name_prof == null) {
                       momNull = OutlineInputBorder(
                           borderRadius: BorderRadius.all(Radius.circular(29.0)),
                           borderSide: BorderSide(color: Colors.red));
                     }
+//Altera Cor Sexo NULL
                     if (_selectedSexo.sexo == "Sexo") {
                       sexoNull = Colors.red;
                     }
-                    if (doencaspreex == "Possui Doenças Preexistentes?") {
-                      doencasNull = Colors.red;
+//Altera Cor Doenças Preexistentes (Sim ou Não) NULL
+                    if (_selectedDoencasPreex.doencapreex ==
+                        "Possui Doenças Preexistentes?") {
+                      doencasPreexNull = Colors.red;
                     }
-                    if (remCont == "Remédios de Uso Contínuo") {
+                    //Altera Cor Seleção Doenças Preexistentes NULL
+                    if (doencasSelecionadas == "[]" ||
+                        doencasSelecionadas == null) {
+                      borderDoencaNull = BoxDecoration(
+                        border: Border.all(width: 1.0, color: Colors.red),
+                        color: kPrimaryLightColor,
+                        borderRadius: BorderRadius.circular(29),
+                      );
+                    }
+//Altera Cor Remédios de Uso Contínuo NULL
+                    if (_selectedRemedCont.remedCont ==
+                        "Remédio de Uso Contínuo") {
                       remContNull = Colors.red;
                     }
-                    if (d_allergy_prof == 'Possui Alergia a Algum Remédio?') {
+//Altera Cor Seleção Remédios de Uso Contínuo NULL
+                    if (remedContSelecionados == "[]" ||
+                        remedContSelecionados == null) {
+                      borderRemContNull = BoxDecoration(
+                        border: Border.all(width: 1.0, color: Colors.red),
+                        color: kPrimaryLightColor,
+                        borderRadius: BorderRadius.circular(29),
+                      );
+                    }
+//Altera Cor Possui Alergia a Algum Remédio (Sim ou Não) NULL
+                    if (_selectedAlergRem.alergRem ==
+                        'Possui Alergia a Algum Remédio?') {
                       alergRemNull = Colors.red;
                     }
-                    if (_selectedAlergRem.alergRem == null) {
-                      alergRemNull = Colors.red;
+//Altera Cor Seleção Alergia Remédios NULL
+                    if (alergRemedSelecionados == "[]" ||
+                        alergRemedSelecionados == null) {
+                      borderRemAlergNull = BoxDecoration(
+                        border: Border.all(width: 1.0, color: Colors.red),
+                        color: kPrimaryLightColor,
+                        borderRadius: BorderRadius.circular(29),
+                      );
                     }
 
-                    if (_selectedSang.tipoSang == null) {
-                      _selectedSang.tipoSang = "";
-                    }
-
+//Altera Cor Plano de Saúde (Sim ou Não) NULL
                     if (_selectedPlanSau.planSau == "Possui Plano de Saúde?") {
                       planSauNull = Colors.red;
                     }
+
+//Altera Cor Carteirinha NULL
                     if (n_health_prof == null) {
                       numPlanSau = OutlineInputBorder(
                           borderRadius: BorderRadius.all(Radius.circular(29.0)),
                           borderSide: BorderSide(color: Colors.red));
                     }
+
                     if (name_prof == null ||
                         fam_name_prof == null ||
                         birth_prof == null ||
@@ -887,9 +1123,7 @@ class _TelaAddPerfilState extends State<TelaAddPerfil> {
                         doencaspreex == "Possui Doenças Preexistentes?" ||
                         remCont == "Remédios de Uso Contínuo" ||
                         d_allergy_prof == 'Possui Alergia a Algum Remédio?' ||
-                        _selectedAlergRem.alergRem == null ||
-                        _selectedPlanSau.planSau == "Possui Plano de Saúde?" ||
-                        n_health_prof == null) {
+                        _selectedAlergRem.alergRem == null) {
                       return showAlertForm(context);
                     }
 
@@ -942,15 +1176,6 @@ class _TelaAddPerfilState extends State<TelaAddPerfil> {
                     }
                   },
                 ),
-                RoundedButton(
-                  text: "Teste",
-                  press: () {
-                    Navigator.push(context,
-                        MaterialPageRoute(builder: (context) {
-                      return MyApp();
-                    }));
-                  },
-                ),
               ],
             ),
           ),
@@ -971,5 +1196,47 @@ class ReusableCard extends StatelessWidget {
     return Container(
       child: Icon(Icons.add_a_photo, color: Color(0xffC7F0E9), size: 44.0),
     );
+  }
+}
+
+class Doenca {
+  final int id;
+  final String name;
+
+  Doenca({
+    this.id,
+    this.name,
+  });
+
+  String toString() {
+    return '$name';
+  }
+}
+
+class Remedio {
+  final int id;
+  final String name;
+
+  Remedio({
+    this.id,
+    this.name,
+  });
+
+  String toString() {
+    return '$name';
+  }
+}
+
+class AlergRemed {
+  final int id;
+  final String name;
+
+  AlergRemed({
+    this.id,
+    this.name,
+  });
+
+  String toString() {
+    return '$name';
   }
 }
