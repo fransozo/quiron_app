@@ -8,7 +8,6 @@ import 'perfil_screen.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'drop_down_list.dart';
-import 'dinamico.dart';
 import 'package:multi_select_flutter/multi_select_flutter.dart';
 
 class TelaAddPerfil extends StatefulWidget {
@@ -756,7 +755,11 @@ class _TelaAddPerfilState extends State<TelaAddPerfil> {
                                     selectedTextStyle:
                                         TextStyle(color: Colors.black),
                                     onTap: (values) {
-                                      doencasSelecionadas = values.toString();
+                                      doencasSelecionadas = values
+                                          .toString()
+                                          .replaceAll(RegExp(r'\['), '')
+                                          .replaceAll(RegExp(r']'), '');
+
                                       print(doencasSelecionadas);
                                       setState(() {
                                         initialvalue = values;
@@ -839,7 +842,10 @@ class _TelaAddPerfilState extends State<TelaAddPerfil> {
                                     selectedTextStyle:
                                         TextStyle(color: Colors.black),
                                     onTap: (values) {
-                                      remedContSelecionados = values.toString();
+                                      remedContSelecionados = values
+                                          .toString()
+                                          .replaceAll(RegExp(r'\['), '')
+                                          .replaceAll(RegExp(r']'), '');
                                       print(remedContSelecionados);
                                       setState(() {
                                         initialvalueRemCont = values;
@@ -922,8 +928,10 @@ class _TelaAddPerfilState extends State<TelaAddPerfil> {
                                     selectedTextStyle:
                                         TextStyle(color: Colors.black),
                                     onTap: (values) {
-                                      alergRemedSelecionados =
-                                          values.toString();
+                                      alergRemedSelecionados = values
+                                          .toString()
+                                          .replaceAll(RegExp(r'\['), '')
+                                          .replaceAll(RegExp(r']'), '');
                                       print(alergRemedSelecionados);
                                       setState(() {
                                         initialvalueRemAlerg = values;

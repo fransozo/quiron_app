@@ -36,6 +36,7 @@ dependencies:
   firebase_auth: ^1.1.2
   firebase_core: ^1.1.0
   cloud_firestore: ^1.0.7
+  syncfusion_flutter_barcodes: ^19.1.64
   
 
 dev_dependencies:

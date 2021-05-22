@@ -101,3 +101,17 @@ class DoencaPreex {
     ];
   }
 }
+
+class Febre {
+  String febre;
+
+  Febre(this.febre);
+
+  static List<Febre> getFebre() {
+    return <Febre>[
+      Febre('Tem Febre?'),
+      Febre('Sim'),
+      Febre('Não'),
+    ];
+  }
+}

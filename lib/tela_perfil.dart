@@ -106,7 +106,7 @@ class TelaPerfil extends StatelessWidget {
                       final dadoDise = dado.get('dise_prof');
                       final dadoHealth = dado.get('health_prof');
                       final dadoHeight = dado.get('height_prof');
-                      final dadoDAlergy = dado.get('d_allergy_prof');
+                      // final dadoDAlergy = dado.get('d_allergy_prof');
                       final dadoMedici = dado.get('medicine_prof');
                       final dadoMom = dado.get('mom_name_prof');
                       final dadoNHealth = dado.get('n_health_prof');
@@ -123,7 +123,7 @@ class TelaPerfil extends StatelessWidget {
                         textDise: dadoDise,
                         textHealth: dadoHealth,
                         textHeight: dadoHeight,
-                        textDAlergy: dadoDAlergy,
+                        // textDAlergy: dadoDAlergy,
                         textMedici: dadoMedici,
                         textMom: dadoMom,
                         textNHealth: dadoNHealth,
@@ -196,7 +196,7 @@ class InputField extends StatelessWidget {
     this.textDise,
     this.textHealth,
     this.textHeight,
-    this.textDAlergy,
+    // this.textDAlergy,
     this.textMedici,
     this.textMom,
     this.textNHealth,
@@ -213,7 +213,7 @@ class InputField extends StatelessWidget {
   final String textDise;
   final String textHealth;
   final String textHeight;
-  final String textDAlergy;
+  // final String textDAlergy;
   final String textMedici;
   final String textMom;
   final String textNHealth;
@@ -266,12 +266,12 @@ class InputField extends StatelessWidget {
         ),
         RoundedInputField(
           hintText: '$textDise',
-          labelText: "Doenças pré-existentes",
+          labelText: "Doenças Pré Existentes",
           onChanged: (value) {},
         ),
         RoundedInputField(
           hintText: '$textMedici',
-          labelText: "Medicamento",
+          labelText: "Remédios de Uso Continuo",
           onChanged: (value) {},
         ),
         RoundedInputField(
@@ -279,24 +279,24 @@ class InputField extends StatelessWidget {
           labelText: "Alergia de Medicamento",
           onChanged: (value) {},
         ),
-        RoundedInputField(
-          hintText: '$textDAlergy',
-          labelText: "Remedios uso continuo",
-          onChanged: (value) {},
-        ),
+        // RoundedInputField(
+        //   hintText: '$textDAlergy',
+        //   labelText: "Remedios uso continuo",
+        //   onChanged: (value) {},
+        // ),
         RoundedInputField(
           hintText: '$textBlood',
-          labelText: "Tipo Sanfuieno",
+          labelText: "Tipo Sanguíeno",
           onChanged: (value) {},
         ),
         RoundedInputField(
           hintText: '$textHealth',
-          labelText: "Plano de Saude",
+          labelText: "Plano de Saúde",
           onChanged: (value) {},
         ),
         RoundedInputField(
           hintText: '$textNHealth',
-          labelText: "Numero da carterinha",
+          labelText: "Número da carterinha",
           onChanged: (value) {},
         ),
       ],
@@ -344,6 +344,10 @@ class RoundedInputField extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return TextFieldContainer(
+      decoration: BoxDecoration(
+        color: kPrimaryLightColor,
+        borderRadius: BorderRadius.circular(29),
+      ),
       child: Column(
         children: [
           Text(labelText),
