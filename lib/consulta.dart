@@ -12,6 +12,7 @@ import 'perfil_screen.dart';
 import 'tela_login.dart';
 import 'drop_down_list.dart';
 import 'rounded_input_field.dart';
+import 'qrCode_consulta.dart';
 
 final _firestore = FirebaseFirestore.instance;
 
@@ -61,8 +62,6 @@ class _ConsultaState extends State<Consulta> {
   String height_prof;
 
   String qtdPerfis;
-
-  String idDoc;
 
   String doencaspreex;
 
@@ -224,6 +223,14 @@ class _InputFieldState extends State<InputField> {
 
   String sintomas;
   String temperatura;
+  String docConsulta;
+  String id;
+  var now;
+  String idDoc;
+  bool enable = false;
+  InputBorder tempNull = InputBorder.none;
+  Color febreNull;
+  InputBorder sintNull = InputBorder.none;
 
   List<DropdownMenuItem<Febre>> buildDropdownMenuFebre(List febres) {
     List<DropdownMenuItem<Febre>> items = [];
@@ -251,8 +258,8 @@ class _InputFieldState extends State<InputField> {
     });
   }
 
-  void addConsulta() {
-    _firestore.collection('consultas').add(
+  void addConsulta() async {
+    await _firestore.collection('consultas').add(
       {
         //Envio Banco de dados
         'name_prof': widget.textName, //Nome
@@ -273,8 +280,85 @@ class _InputFieldState extends State<InputField> {
         'weight_prof': widget.textWeight,
         'temperatura': temperatura,
         'sintomas': sintomas,
+        'time': now,
       },
     );
+  }
+
+  enableTemp() {
+    if (_selectedFebre.febre == "Sim") {
+      enable = true;
+    } else {
+      enable = false;
+    }
+    return enable;
+  }
+
+  showAlertDialog(BuildContext context) {
+    // set up the button
+    Widget okButton = TextButton(
+      child: Text("OK"),
+      onPressed: () {
+        Navigator.pop(context);
+      },
+    );
+
+    // set up the AlertDialog
+    AlertDialog alert = AlertDialog(
+      title: Text("Alerta"),
+      content: Text("Favor preencher a temperatura aferida da Febre."),
+      actions: [
+        okButton,
+      ],
+    );
+
+    // show the dialog
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return alert;
+      },
+    );
+  }
+
+  showAlertNull(BuildContext context) {
+    // set up the button
+    Widget okButton = TextButton(
+      child: Text("OK"),
+      onPressed: () {
+        Navigator.pop(context);
+      },
+    );
+
+    // set up the AlertDialog
+    AlertDialog alert = AlertDialog(
+      title: Text("Alerta"),
+      content: Text("Favor preencher os campos em vermelho."),
+      actions: [
+        okButton,
+      ],
+    );
+
+    // show the dialog
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return alert;
+      },
+    );
+  }
+
+  getIdConsulta() async {
+    QuerySnapshot resultado = await _firestore
+        .collection("consultas")
+        .where("rg_prof", isEqualTo: widget.textRG)
+        .where('time', isEqualTo: now)
+        .get();
+    resultado.docs.forEach((d) {
+      idDoc = d.id;
+    });
+
+    return idDoc;
   }
 
   @override
@@ -298,11 +382,15 @@ class _InputFieldState extends State<InputField> {
               Padding(
                 padding: const EdgeInsets.fromLTRB(2.0, 8.0, 14.0, 8.0),
                 child: Image.asset(
-                  'images/icons/sex.png',
+                  'images/icons/temperatura.png',
                   color: kPrimaryColor,
                 ),
               ),
               DropdownButton(
+                underline: Container(
+                  color: febreNull,
+                  height: 2,
+                ),
                 value: _selectedFebre,
                 items: _dropdownMenuFebre,
                 onChanged: onChangeDropdownFebre,
@@ -315,11 +403,14 @@ class _InputFieldState extends State<InputField> {
 //Altura
         RoundedInputField(
           hintText: "Qual Temperatura?",
+          enable: enableTemp(),
+          border: tempNull,
           onChanged: (value) {
             temperatura = value;
           },
         ),
         RoundedInputField(
+          border: sintNull,
           hintText: "Sintomas",
           onChanged: (value) {
             sintomas = value;
@@ -339,12 +430,48 @@ class _InputFieldState extends State<InputField> {
                     Color(0xFF15EBC4),
                   ),
                 ),
-                onPressed: () {
+                onPressed: () async {
+                  if (_selectedFebre.febre == "Sim" && temperatura == null) {
+                    tempNull = OutlineInputBorder(
+                        borderRadius: BorderRadius.all(Radius.circular(29.0)),
+                        borderSide: BorderSide(color: Colors.red));
+
+                    return showAlertDialog(context);
+                  }
+
+                  if (_selectedFebre.febre == "Tem Febre?") {
+                    setState(() {
+                      febreNull = Colors.red;
+                    });
+                  } else if (_selectedFebre.febre != "Tem Febre?") {
+                    setState(() {
+                      febreNull = kPrimaryLightColor;
+                    });
+                  }
+
+                  if (sintomas == null) {
+                    sintNull = OutlineInputBorder(
+                        borderRadius: BorderRadius.all(Radius.circular(29.0)),
+                        borderSide: BorderSide(color: Colors.red));
+                  }
+
+                  if (sintomas == null ||
+                      _selectedFebre.febre == "Tem Febre?") {
+                    return showAlertNull(context);
+                  }
+                  now = DateTime.now();
                   addConsulta();
-                  print(widget.textName);
+                  idDoc = await getIdConsulta();
+
+                  print(now);
+
+                  print(idDoc);
                   print(_selectedFebre.febre);
                   print(temperatura);
-                  print(sintomas);
+
+                  Navigator.push(context, MaterialPageRoute(builder: (context) {
+                    return QrCode(idPerfil: idDoc);
+                  }));
                 },
                 child: Text("Consulta",
                     style: TextStyle(fontSize: 30.0, color: Colors.white))),
