@@ -31,6 +31,37 @@ class _LoginPageState extends State<LoginPage> {
     return false;
   }
 
+  //Alerta de numero maximo de perfis excedido.
+  showAlertDialog(BuildContext context) {
+    // set up the button
+    Widget okButton = TextButton(
+      child: Text("OK"),
+      onPressed: () {
+        Navigator.push(context, MaterialPageRoute(builder: (context) {
+          return PerfilScreen();
+        }));
+      },
+    );
+
+    // set up the AlertDialog
+    AlertDialog alert = AlertDialog(
+      title: Text("Alerta"),
+      content: Text(
+          "Número máximo de perfis atingido. Caso seja necessário exclua um perfil."),
+      actions: [
+        okButton,
+      ],
+    );
+
+    // show the dialog
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return alert;
+      },
+    );
+  }
+
   void validateAndSubmit() async {
     if (validateAndSave()) {
       try {
@@ -51,9 +82,9 @@ class _LoginPageState extends State<LoginPage> {
             return PerfilScreen();
           }));
         }
-        widget.onSignedIn;
-      } catch (e) {
-        print("Error: $e");
+        //widget.onSignedIn;
+      } on FirebaseAuthException catch (e) {
+        print("$e");
       }
     }
   }

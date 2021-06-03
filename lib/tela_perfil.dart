@@ -6,12 +6,17 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'consulta.dart';
 
 final _firestore = FirebaseFirestore.instance;
+Timestamp consultaTime;
+DateTime consultaTimePlus;
 
 class TelaPerfil extends StatelessWidget {
   final Widget child;
   TelaPerfil({Key key, @required this.child, this.rgPerfil}) : super(key: key);
 
   String rgPerfil;
+  String idConsulta;
+  DateTime datetime;
+  DateTime controlTime;
 
   void getDados() async {
     await for (var snapshot in _firestore.collection('perfil').snapshots()) {
@@ -21,9 +26,32 @@ class TelaPerfil extends StatelessWidget {
     }
   }
 
+  void getConsultas() async {
+    QuerySnapshot resultado = await _firestore
+        .collection("consultas")
+        .where("rg_prof", isEqualTo: "$rgPerfil")
+        .get();
+    resultado.docs.forEach((d) {
+      idConsulta = d.id;
+      consultaTime = d.get('time');
+      datetime = consultaTime.toDate();
+      controlTime = datetime.add(const Duration(hours: 3));
+      print("****Abaixo estão todas as consultas");
+      print(idConsulta);
+      print(consultaTime);
+      print(datetime);
+      print(controlTime);
+    });
+  }
+
+  enableCriarConsulta() {
+    assert(datetime.isAfter(DateTime.now()));
+  }
+
   @override
   Widget build(BuildContext context) {
     getDados();
+    getConsultas();
 
     Size size = MediaQuery.of(context).size;
     return Scaffold(
@@ -106,7 +134,7 @@ class TelaPerfil extends StatelessWidget {
                       final dadoDise = dado.get('dise_prof');
                       final dadoHealth = dado.get('health_prof');
                       final dadoHeight = dado.get('height_prof');
-                      // final dadoDAlergy = dado.get('d_allergy_prof');
+
                       final dadoMedici = dado.get('medicine_prof');
                       final dadoMom = dado.get('mom_name_prof');
                       final dadoNHealth = dado.get('n_health_prof');
@@ -123,7 +151,6 @@ class TelaPerfil extends StatelessWidget {
                         textDise: dadoDise,
                         textHealth: dadoHealth,
                         textHeight: dadoHeight,
-                        // textDAlergy: dadoDAlergy,
                         textMedici: dadoMedici,
                         textMom: dadoMom,
                         textNHealth: dadoNHealth,
@@ -166,6 +193,37 @@ class TelaPerfil extends StatelessWidget {
                                 fontSize: 30.0, color: Colors.white))),
                   ),
                 ),
+                Visibility(
+                  visible: true,
+                  child: Container(
+                    padding: EdgeInsets.symmetric(horizontal: 1, vertical: 5),
+                    width: size.width * 0.8,
+                    child: ClipRRect(
+                      borderRadius: BorderRadius.circular(29),
+                      child: TextButton(
+                          style: ButtonStyle(
+                            padding:
+                                MaterialStateProperty.all<EdgeInsetsGeometry>(
+                              EdgeInsets.symmetric(
+                                  vertical: 10, horizontal: 40),
+                            ),
+                            backgroundColor: MaterialStateProperty.all<Color>(
+                              Color(0xFF15EBC4),
+                            ),
+                          ),
+                          onPressed: () {
+                            //plussTime();
+                            // Navigator.push(context,
+                            //     MaterialPageRoute(builder: (context) {
+                            //   return Consulta(rgPerfil: '$rgPerfil');
+                            // }));
+                          },
+                          child: Text("Criar nova Consulta",
+                              style: TextStyle(
+                                  fontSize: 30.0, color: Colors.white))),
+                    ),
+                  ),
+                ),
               ],
             ),
           )
@@ -196,7 +254,6 @@ class InputField extends StatelessWidget {
     this.textDise,
     this.textHealth,
     this.textHeight,
-    // this.textDAlergy,
     this.textMedici,
     this.textMom,
     this.textNHealth,
@@ -213,7 +270,7 @@ class InputField extends StatelessWidget {
   final String textDise;
   final String textHealth;
   final String textHeight;
-  // final String textDAlergy;
+
   final String textMedici;
   final String textMom;
   final String textNHealth;
@@ -279,11 +336,6 @@ class InputField extends StatelessWidget {
           labelText: "Alergia de Medicamento",
           onChanged: (value) {},
         ),
-        // RoundedInputField(
-        //   hintText: '$textDAlergy',
-        //   labelText: "Remedios uso continuo",
-        //   onChanged: (value) {},
-        // ),
         RoundedInputField(
           hintText: '$textBlood',
           labelText: "Tipo Sanguíeno",
@@ -349,23 +401,7 @@ class RoundedInputField extends StatelessWidget {
         borderRadius: BorderRadius.circular(29),
       ),
       child: Column(
-        children: [
-          Text(labelText),
-          Text(hintText)
-          //TextField(
-          //  style: TextStyle(color: Colors.black54, fontFamily: 'Monda'),
-          // onChanged: onChanged,
-          //  cursorColor: kPrimaryColor,
-          //  decoration: InputDecoration(
-          //    icon: Icon(
-          //      icon,
-          //     color: kPrimaryColor,
-          //    ),
-          //   hintText: hintText,
-          //   border: InputBorder.none,
-          // ),
-          //),
-        ],
+        children: [Text(labelText), Text(hintText)],
       ),
     );
   }
